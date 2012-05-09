@@ -1,8 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ingest_component</groupId>
   <artifactId>ingest_initiator_media_files</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Ingest Initiator Medie Files</name>
   <description>Initiates ingest of medie files</description>
+
+  <parent>
+    <groupId>dk.statsbiblioteket.sbprojects</groupId>
+    <artifactId>sbprojects-parent</artifactId>
+    <version>3</version>
+  </parent>
+
+  <repositories>
+    <repository>
+      <id>sbprojects-nexus</id>
+      <url>https://sbprojects.statsbiblioteket.dk/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>dk.statsbiblioteket.mediaplatform</groupId>
+      <artifactId>channelarchivingrequester</artifactId>
+      <version>0.1.1-snapshot</version>
+    </dependency>
+  </dependencies>
+
 </project>
