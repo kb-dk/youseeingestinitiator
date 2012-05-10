@@ -30,7 +30,17 @@
     <dependency>
       <groupId>dk.statsbiblioteket.mediaplatform</groupId>
       <artifactId>channelarchivingrequester</artifactId>
-      <version>0.1.1-snapshot</version>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.16</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6.2</version>
     </dependency>
   </dependencies>
 
