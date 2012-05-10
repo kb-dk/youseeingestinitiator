@@ -6,7 +6,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestService;
-import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 
 public class IngestInitiatorMediaFilesFactory {
 
@@ -33,7 +33,7 @@ public class IngestInitiatorMediaFilesFactory {
         
         Logger log = Logger.getLogger(IngestInitiatorMediaFiles.class);
         PrintWriter outputPrintWriter = new PrintWriter(System.out);
-        ChannelArchveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
+        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
         IngestInitiatorMediaFiles ingestInitiatorMediaFiles = new IngestInitiatorMediaFiles(log, properties, channelArchiveRequestService, outputPrintWriter);
         return ingestInitiatorMediaFiles;
     }

@@ -9,17 +9,17 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
-import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 
 public class IngestInitiatorMediaFiles {
 
     private static final String YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY = "yousee.recordings.days.to.keep";
     private Logger log;
     private Properties properties;
-    private ChannelArchveRequestServiceIF channelArchiveRequestService;
+    private ChannelArchiveRequestServiceIF channelArchiveRequestService;
     private PrintWriter outputPrintWriter;
 
-    public IngestInitiatorMediaFiles(Logger log, Properties properties, ChannelArchveRequestServiceIF channelArchiveRequestDAO, PrintWriter outputPrintWriter) {
+    public IngestInitiatorMediaFiles(Logger log, Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, PrintWriter outputPrintWriter) {
         super();
         if (log == null) {
             throw new RuntimeException("No logger supplied to constructor.");
@@ -41,6 +41,7 @@ public class IngestInitiatorMediaFiles {
 
     public void initiateMediaFileIngest(DateTime dateOfIngest) throws MissingPropertyException {
         log.info("Initiated ingest based on date: " + dateOfIngest);
+        /*
         if (dateOfIngest == null) {
             log.error("Input date was null: " + dateOfIngest);
             throw new IllegalArgumentException("Input date cannot be null.");
@@ -53,7 +54,7 @@ public class IngestInitiatorMediaFiles {
         DateTime toDate = dateOfIngest;
         DateTime fromDate = dateOfIngest.minusDays(daysYouSeeKeepsRecordings);
         List<ChannelArchiveRequest> requests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
-        
+        */
         
         List<IngestMediaFileJobParameters> outputList = new ArrayList<IngestMediaFileJobParameters>();
         
@@ -63,7 +64,7 @@ public class IngestInitiatorMediaFiles {
 
     public void outputResult(List<IngestMediaFileJobParameters> outputList) {
         String testOutput = 
-                "   {\n"
+                " {\n"
                 + "     \"downloads\":[\n"
                 + "         {\n"
                 + "            \"fileID\" : \"DR HD_20120915_100000_20120915_110000.mux\",\n"

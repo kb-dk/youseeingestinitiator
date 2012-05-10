@@ -1,0 +1,21 @@
+<assembly>
+
+    <id>libs</id>
+
+    <formats>
+        <format>dir</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact>
+            <!--outputDirectory>downloadInitiatorLibs</outputDirectory-->
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>dk.statsbiblioteket.mediaplatform.ingest:ingest_initiator_media_files</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+
+</assembly>

@@ -9,10 +9,10 @@ import org.joda.time.DateTime;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
-import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 
 public class ChannelArchveRequestServiceMock implements
-        ChannelArchveRequestServiceIF {
+        ChannelArchiveRequestServiceIF {
 
     @Override
     public List<ChannelArchiveRequest> getValidRequests(Date fromDate, Date toDate) {

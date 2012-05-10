@@ -59,7 +59,7 @@ public class IngestInitiatorMediaFilesTest {
 
         String actual = getOutput(reader);
         String expected = 
-                "   {\n"
+                " {\n"
                 + "     \"downloads\":[\n"
                 + "         {\n"
                 + "            \"fileID\" : \"DR HD_20120915_100000_20120915_110000.mux\",\n"
