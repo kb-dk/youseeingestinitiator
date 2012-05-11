@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.mediaplatform.ingest.ingestinitiatormediafiles;
+package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.jfree.util.Log;
 import org.joda.time.DateTime;
 
-public class IngestInitiatorMediaFilesCLI {
+public class IngestMediaFilesInitiatorCLI {
 
     /**
      * Starts media file ingest initiator with the following setup:
@@ -55,10 +55,10 @@ public class IngestInitiatorMediaFilesCLI {
         // Create classes to inject into initiator and construct initiator
         System.err.println("Creating initiator..." );
         try {
-            IngestInitiatorMediaFiles ingestInitiatorMediaFiles = IngestInitiatorMediaFilesFactory.create(properties);
+            IngestMediaFilesInitiator ingestInitiatorMediaFiles = IngestMediaFilesInitiatorFactory.create(properties);
             // Start initator
             System.err.println("Starting initiator..." );
-            ingestInitiatorMediaFiles.initiateMediaFileIngest(ingestBaseTime);
+            ingestInitiatorMediaFiles.start(ingestBaseTime);
         } catch (MissingPropertyException e) {
             String msg = "Error reading property from file: " + filenameAndPath;
             errorMessage(e, msg);

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!--
+    Error log for serious problems
+    -->
+    <appender name="error_log" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logs/DOMSExporter.error.log"></param>
+        <param name="MaxBackupIndex" value="20"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- <param name="ConversionPattern"
+                   value="%-5p [%d{yyyy-MM-dd HH.mm:ss}] %C{1}.%M(%L): %m%n" /> -->
+            <param name="ConversionPattern"
+                   value="%-5p [%t] [%d] [%c] - %l [LINENUMBER: %L] [METHOD: %M] [%X]  %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ERROR"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+    </appender>
+
+    <!--
+    a debug logger. minimum logging level set as needed
+    -->
+    <appender name="debug_log" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logs/DOMSExporter.debug.log"></param>
+        <param name="MaxBackupIndex" value="20"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-5p [%d{yyyy-MM-dd HH.mm:ss}] %C{1}.%M(%L): %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+    </appender>
+
+    <root>
+        <priority value ="DEBUG" />
+        <appender-ref ref="error_log" />
+        <appender-ref ref="debug_log" />
+    </root>
+
+</log4j:configuration>

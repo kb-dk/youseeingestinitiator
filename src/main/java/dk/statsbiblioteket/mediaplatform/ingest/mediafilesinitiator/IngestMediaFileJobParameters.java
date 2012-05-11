@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.mediaplatform.ingest.ingestinitiatormediafiles;
+package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 public class IngestMediaFileJobParameters {
 

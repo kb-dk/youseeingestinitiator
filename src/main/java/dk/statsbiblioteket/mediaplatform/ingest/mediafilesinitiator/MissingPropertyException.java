@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.mediaplatform.ingest.ingestinitiatormediafiles;
+package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 @SuppressWarnings("serial")
 public class MissingPropertyException extends Exception {

@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.mediaplatform.ingest.ingestinitiatormediafiles;
+package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 import static org.junit.Assert.*;
 
@@ -22,13 +22,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IngestInitiatorMediaFilesTest {
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.MissingPropertyException;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.ChannelArchiveRequestServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.YouSeeChannelMappingServiceIF;
+
+public class IngestMediaFilesInitiatorTest {
 
     private Level testLogLevel = Level.DEBUG;
     private Properties properties;
     private Logger log = null;
 
-    public IngestInitiatorMediaFilesTest() {
+    public IngestMediaFilesInitiatorTest() {
         properties = new Properties();
         properties.setProperty("yousee.recordings.days.to.keep", "28");
 
@@ -36,7 +43,7 @@ public class IngestInitiatorMediaFilesTest {
         BasicConfigurator.configure();
         System.out.println("Log level set to: " + testLogLevel);
         Logger.getRootLogger().setLevel(testLogLevel);
-        log = Logger.getLogger(IngestInitiatorMediaFiles.class);
+        log = Logger.getLogger(IngestMediaFilesInitiator.class);
     }
 
     @Before
@@ -52,10 +59,10 @@ public class IngestInitiatorMediaFilesTest {
         PipedWriter pipedWriter = new PipedWriter();
         BufferedReader reader = new BufferedReader(new PipedReader(pipedWriter));
         PrintWriter outputPrintWriter = new PrintWriter(pipedWriter);
-        IngestInitiatorMediaFiles initiator = IngestInitiatorMediaFilesTestFactory.create(properties, outputPrintWriter);
+        IngestMediaFilesInitiator initiator = createIngestInitiatorMediaFilesStub(properties, outputPrintWriter);
 
-        DateTime inputDate = new DateTime(1968, 1, 1, 0, 0, 0, 0);
-        initiator.initiateMediaFileIngest(inputDate);
+        DateTime inputDate = new DateTime(2009, 1, 1, 0, 0, 0, 0);
+        initiator.start(inputDate);
 
         String actual = getOutput(reader);
         String expected = 
@@ -92,4 +99,11 @@ public class IngestInitiatorMediaFilesTest {
         return actual;
     }
 
+    private static IngestMediaFilesInitiator createIngestInitiatorMediaFilesStub(Properties properties, PrintWriter outputPrintWriter) {
+        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
+        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
+        Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);
+        IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, outputPrintWriter);
+        return ingestInitiatorMediaFiles;
+    }
 }
