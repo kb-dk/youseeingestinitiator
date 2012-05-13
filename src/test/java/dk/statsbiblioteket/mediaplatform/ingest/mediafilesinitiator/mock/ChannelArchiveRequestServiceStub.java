@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
@@ -14,15 +16,18 @@ import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequ
 public class ChannelArchiveRequestServiceStub implements
 ChannelArchiveRequestServiceIF {
 
+    private ArrayList<ChannelArchiveRequest> cars = new ArrayList<ChannelArchiveRequest>();
+    
     @Override
     public List<ChannelArchiveRequest> getValidRequests(Date fromDate, Date toDate) {
-        ArrayList<ChannelArchiveRequest> cars = new ArrayList<ChannelArchiveRequest>();
-        cars.add(createCAR(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
-        cars.add(createCAR(2L, "dr2", WeekdayCoverage.DAILY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         return cars;
     }
 
-    public ChannelArchiveRequest createCAR(long id, String sBChannelId,
+    public void addCar(ChannelArchiveRequest car) {
+        cars.add(car);
+    }
+
+    public static ChannelArchiveRequest createCAR(long id, String sBChannelId,
             WeekdayCoverage weekdayCoverage, Time fromTime, Time toTime,
             Date fromDate2, Date toDate2) {
         ChannelArchiveRequest car = new ChannelArchiveRequest();
