@@ -2,21 +2,38 @@ package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 import org.joda.time.DateTime;
 
-public class MediaFileIngestParameters implements Comparable<MediaFileIngestParameters> {
+/**
+ * This class represents container objects for the output of the initiator. The output
+ * consists of a list of objects of this class.
+ * 
+ * Each instans represents media file that must be downloaded and ingested to SB's 
+ * media platform. The information contained in the objects are required in the tasks
+ * later in the workflow. 
+ * 
+ * The primary field is the filename of the media file that is planned to get downloaded
+ * from YouSee. 
+ * 
+ * @author henningbottger
+ *
+ */
+public class MediaFileIngestOutputParameters implements Comparable<MediaFileIngestOutputParameters> {
 
-    public String channelIDSB;
-    public String channelIDYouSee;
-    public DateTime startDate; // YYYYMMDDHHMMSS
-    public DateTime endDate; // YYYYMMDDHHMMSS
-    public String youseeFileName;
+    /** The SB channel id of the medie that is planned for ingest. */
+    public final String channelIDSB;
     
-    public MediaFileIngestParameters(String channelIDSB, DateTime startDate, DateTime endDate) {
-        this.channelIDSB = channelIDSB;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    /** The YouSee channel id */
+    public final String channelIDYouSee;
+    
+    /** The start time (whole hour) of the media, ie. 2012-03-04 14:00:00 */
+    public final DateTime startDate; // YYYYMMDDHHMMSS
 
-    public MediaFileIngestParameters(String youseeFilename, String channelIDSB, String channelIDYouSee, DateTime startDate, DateTime endDate) {
+    /** The end time (whole hour) of the media, ie. 2012-03-04 15:00:00 */
+    public final DateTime endDate; // YYYYMMDDHHMMSS
+    
+    /** The filename of the media as found on the YouSee ftp-server */
+    public final String youseeFileName;
+
+    public MediaFileIngestOutputParameters(String youseeFilename, String channelIDSB, String channelIDYouSee, DateTime startDate, DateTime endDate) {
         this.youseeFileName = youseeFilename;
         this.channelIDSB = channelIDSB;
         this.channelIDYouSee = channelIDYouSee;
@@ -28,44 +45,24 @@ public class MediaFileIngestParameters implements Comparable<MediaFileIngestPara
         return channelIDSB;
     }
 
-    public void setChannelIDSB(String channelIDSB) {
-        this.channelIDSB = channelIDSB;
-    }
-
     public String getChannelIDYouSee() {
         return channelIDYouSee;
-    }
-
-    public void setChannelIDYouSee(String channelIDYouSee) {
-        this.channelIDYouSee = channelIDYouSee;
     }
 
     public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(DateTime startDate) {
-        this.startDate = startDate;
-    }
-
     public DateTime getEndDate() {
         return endDate;
-    }
-
-    public void setEndDate(DateTime endDate) {
-        this.endDate = endDate;
     }
 
     public String getYouseeFileName() {
         return youseeFileName;
     }
 
-    public void setYouseeFileName(String youseeFileName) {
-        this.youseeFileName = youseeFileName;
-    }
-
     @Override
-    public int compareTo(MediaFileIngestParameters other) {
+    public int compareTo(MediaFileIngestOutputParameters other) {
         return this.startDate.compareTo(other.startDate);
     }
 
@@ -93,7 +90,7 @@ public class MediaFileIngestParameters implements Comparable<MediaFileIngestPara
             return false;
         if (getClass() != obj.getClass())
             return false;
-        MediaFileIngestParameters other = (MediaFileIngestParameters) obj;
+        MediaFileIngestOutputParameters other = (MediaFileIngestOutputParameters) obj;
         if (channelIDSB == null) {
             if (other.channelIDSB != null)
                 return false;
@@ -129,6 +126,4 @@ public class MediaFileIngestParameters implements Comparable<MediaFileIngestPara
                 + startDate + ", endDate=" + endDate + ", youseeFileName="
                 + youseeFileName + "]";
     }
-    
-    
 }

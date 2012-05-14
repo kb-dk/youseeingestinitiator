@@ -51,9 +51,9 @@ public class IngestMediaFilesInitiatorTest {
         ByteArrayOutputStream byteArrayoutputStream = new ByteArrayOutputStream();
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(null, null, null, System.out);//outputPrintWriter);
 
-        List<MediaFileIngestParameters> outputList = new ArrayList<MediaFileIngestParameters>();
-        outputList.add(new MediaFileIngestParameters("DR HD_20120915_100000_20120915_110000.mux", "drhd", "DR HD", new DateTime(2012,9,15,10,0,0), new DateTime(2012,9,15,11,0,0)));
-        outputList.add(new MediaFileIngestParameters("DR HD_20120915_110000_20120915_120000.mux", "drhd", "DR HD", new DateTime(2012,9,15,11,0,0), new DateTime(2012,9,15,12,0,0)));
+        List<MediaFileIngestOutputParameters> outputList = new ArrayList<MediaFileIngestOutputParameters>();
+        outputList.add(new MediaFileIngestOutputParameters("DR HD_20120915_100000_20120915_110000.mux", "drhd", "DR HD", new DateTime(2012,9,15,10,0,0), new DateTime(2012,9,15,11,0,0)));
+        outputList.add(new MediaFileIngestOutputParameters("DR HD_20120915_110000_20120915_120000.mux", "drhd", "DR HD", new DateTime(2012,9,15,11,0,0), new DateTime(2012,9,15,12,0,0)));
         initiator.outputResult(outputList , byteArrayoutputStream);
 
         String actual = byteArrayoutputStream.toString();
@@ -83,14 +83,14 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferFilesToIngestFilenameTest() throws IOException {
         DateTime dateToCheck = new DateTime(2010, 3, 1, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
-        ChannelArchiveRequest caRequest = ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.MONDAY, new Time(0, 0, 0), new Time(1, 0, 0), dateToCheck.minusDays(3).toDate(), dateToCheck.plusDays(3).toDate());
+        ChannelArchiveRequest caRequest = ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(0, 0, 0), new Time(1, 0, 0), dateToCheck.minusDays(3).toDate(), dateToCheck.plusDays(3).toDate());
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
                 System.out);
-        Set<MediaFileIngestParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
-        MediaFileIngestParameters mediaFileIngestParameters = new ArrayList<MediaFileIngestParameters>(files).get(0);
+        Set<MediaFileIngestOutputParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
+        MediaFileIngestOutputParameters mediaFileIngestParameters = new ArrayList<MediaFileIngestOutputParameters>(files).get(0);
         String actual = mediaFileIngestParameters.getYouseeFileName();
         assertEquals("DR1_20100301000000_20100301010000.mux", actual);
     }
@@ -98,7 +98,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
@@ -108,7 +108,7 @@ public class IngestMediaFilesInitiatorTest {
         int youSeeKeepDuration = 7;
         DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
         DateTime fromDate = toDate.minusDays(youSeeKeepDuration);
-        List<MediaFileIngestParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
         int expectedNumberOfFiles = 12;
         assertEquals(expectedNumberOfFiles, actual.size());
     }
@@ -116,7 +116,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelTwoWeeksTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
@@ -126,7 +126,7 @@ public class IngestMediaFilesInitiatorTest {
         int youSeeKeepDuration = 14;
         DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
         DateTime fromDate = toDate.minusDays(youSeeKeepDuration);
-        List<MediaFileIngestParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
         int expectedNumberOfFiles = 2*12;
         assertEquals(expectedNumberOfFiles, actual.size());
     }
@@ -134,7 +134,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.MONDAY_TO_THURSDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY_TO_THURSDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
@@ -144,7 +144,7 @@ public class IngestMediaFilesInitiatorTest {
         int youSeeKeepDuration = 7;
         DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
         DateTime fromDate = toDate.minusDays(youSeeKeepDuration);
-        List<MediaFileIngestParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
         int expectedNumberOfFiles = 4*12;
         assertEquals(expectedNumberOfFiles, actual.size());
     }
@@ -152,7 +152,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelDailyOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
@@ -162,7 +162,7 @@ public class IngestMediaFilesInitiatorTest {
         int youSeeKeepDuration = 7;
         DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
         DateTime fromDate = toDate.minusDays(youSeeKeepDuration-1);
-        List<MediaFileIngestParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
         int expectedNumberOfFiles = 7*24;
         assertEquals(expectedNumberOfFiles, actual.size());
     }
@@ -170,8 +170,8 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelOverlappingRequestOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
-        caRequests.add(ChannelArchiveRequestServiceStub.createCAR(1L, "dr1", WeekdayCoverage.THURSDAY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.THURSDAY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 null, 
                 null, 
@@ -181,8 +181,8 @@ public class IngestMediaFilesInitiatorTest {
         int youSeeKeepDuration = 7;
         DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
         DateTime fromDate = toDate.minusDays(youSeeKeepDuration-1);
-        List<MediaFileIngestParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
-        for (MediaFileIngestParameters mediaFileIngestParameters : actual) {
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        for (MediaFileIngestOutputParameters mediaFileIngestParameters : actual) {
             log.debug(mediaFileIngestParameters);
         }
         int expectedNumberOfFiles = 7*24;

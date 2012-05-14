@@ -36,19 +36,14 @@ public class IngestMediaFilesInitiator {
 
     private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final String YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY = "yousee.recordings.days.to.keep";
-    private static final DateTimeFormatter outputDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");;
+    private static final DateTimeFormatter outputDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
 
-    private Properties properties;
-    private ChannelArchiveRequestServiceIF channelArchiveRequestService;
-    private YouSeeChannelMappingServiceIF youSeeChannelMappingService;
-    private OutputStream outputStream;
+    private final Properties properties;
+    private final ChannelArchiveRequestServiceIF channelArchiveRequestService;
+    private final YouSeeChannelMappingServiceIF youSeeChannelMappingService;
+    private final OutputStream outputStream;
 
-    private IngestMediaFilesInitiator() {
-        super();
-    }
-    
     public IngestMediaFilesInitiator(Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, YouSeeChannelMappingServiceIF youSeeChannelMappingService, OutputStream outputStream) {
-        this();
         this.properties = properties;
         this.channelArchiveRequestService = channelArchiveRequestDAO;
         this.youSeeChannelMappingService = youSeeChannelMappingService;
@@ -56,42 +51,41 @@ public class IngestMediaFilesInitiator {
     }
 
     /**
-     * Input til initiatoren er en dato. Initiatoren gennegår derpå følgende skridt:
+     * Input til initiatoren er en dato. Initiatoren gennemgår derpå følgende skridt:
      * 
      * <ol>
      *   <li>Udled periode som vi ønsker at downloade filer for, eg. nu og 28 dage tilbage</li>
-     *   
      *   <li>Hent planlagt optageperioder fra ChannelArchiveRequestService</li>
-     *   
      *   <li>Udled hvilke filer der skal downloades ud fra planlagte optageperioder og den periode vi 
      *          ønsker at downloade filer fra</li>
-     *          
      *   <li>Filtrer filer fra som vi allerede har ingested i systemet</li>
-     *   
      *   <li>Output ingest job for hver fil der ønskes ingested til stdout</li>
-     *   
      * </ol>
      * 
      * 
      * @param dateOfIngest Last date in download period.
      * @throws NullPointerException if dateOfIngest is null
      */
-    public void initiate(DateTime dateOfIngest) {
-        log.info("Initiated ingest based on date: " + dateOfIngest);
+    public void initiateIngest(DateTime dateOfIngest) {
+        log.debug("Initiated ingest based on date: " + dateOfIngest);
         // Infer period to ingest
         int daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
         DateTime toDate = dateOfIngest;
         DateTime fromDate = dateOfIngest.minusDays(daysYouSeeKeepsRecordings-1); // dateOfIngest counts as one day
+        log.info("Ingestion periode: " + fromDate + " to " + toDate);
         List<ChannelArchiveRequest> caRequests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
-        List<MediaFileIngestParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
-        List<MediaFileIngestParameters> filteredFileList = filter(new ArrayList<MediaFileIngestParameters>(fullFileList));
+        log.debug("Found requests: " + caRequests);
+        List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
+        log.debug("Full file list: " + fullFileList);
+        List<MediaFileIngestOutputParameters> filteredFileList = filter(new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
+        log.debug("Filtered file list: " + filteredFileList);
         outputResult(filteredFileList, outputStream);
-        log.info("Done initiating ingest based on date: " + dateOfIngest);
+        log.debug("Done initiating ingest based on date: " + dateOfIngest);
     }
 
-    protected List<MediaFileIngestParameters> inferFilesToIngest(List<ChannelArchiveRequest> caRequests, DateTime fromDate, DateTime toDate) {
+    protected List<MediaFileIngestOutputParameters> inferFilesToIngest(List<ChannelArchiveRequest> caRequests, DateTime fromDate, DateTime toDate) {
         log.debug("Infering files to ingest. Request: " + caRequests + ", fromDate: " + fromDate + ", toDate: " + toDate);
-        Set<MediaFileIngestParameters> filesToIngest = new HashSet<MediaFileIngestParameters>();
+        Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
         DateTime dayToCheck = fromDate;
         while (dayToCheck.isBefore(toDate) || dayToCheck.equals(toDate)) {
             for (ChannelArchiveRequest car : caRequests) {
@@ -99,7 +93,7 @@ public class IngestMediaFilesInitiator {
             }
             dayToCheck = dayToCheck.plusDays(1);
         }
-        List<MediaFileIngestParameters> fileList = new ArrayList<MediaFileIngestParameters>(filesToIngest);
+        List<MediaFileIngestOutputParameters> fileList = new ArrayList<MediaFileIngestOutputParameters>(filesToIngest);
         Collections.sort(fileList);
         return fileList;
     }
@@ -121,8 +115,8 @@ public class IngestMediaFilesInitiator {
      * @param dayToCheck
      * @return
      */
-    protected Set<MediaFileIngestParameters> inferFilesToIngest(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
-        Set<MediaFileIngestParameters> filesToIngest = new HashSet<MediaFileIngestParameters>();
+    protected Set<MediaFileIngestOutputParameters> inferFilesToIngest(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
+        Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
         try {
             if (isChannelArchiveRequestActive(caRequest, dayToCheck)) {
                 String sbChannelID = caRequest.getsBChannelId();
@@ -142,7 +136,7 @@ public class IngestMediaFilesInitiator {
                             youseeChannelID + "_"
                             + outputDateFormatter.print(startDate) + "_"
                             + outputDateFormatter.print(endDate) + ".mux";
-                    filesToIngest.add(new MediaFileIngestParameters(youseeFilename, sbChannelID, youseeChannelID, startDate, endDate));
+                    filesToIngest.add(new MediaFileIngestOutputParameters(youseeFilename, sbChannelID, youseeChannelID, startDate, endDate));
                     hour++;
                 }
             }
@@ -239,10 +233,11 @@ public class IngestMediaFilesInitiator {
         return caRequestActive;
     }
 
-    protected List<MediaFileIngestParameters> filter(List<MediaFileIngestParameters> unFilteredOutputList) {
-        List<MediaFileIngestParameters> filteredList = new ArrayList<MediaFileIngestParameters>();
+    protected List<MediaFileIngestOutputParameters> filter(List<MediaFileIngestOutputParameters> unFilteredOutputList) {
+        List<MediaFileIngestOutputParameters> filteredList = new ArrayList<MediaFileIngestOutputParameters>();
         log.warn("No filtering is implemented.");
         // TODO: Do real stuff
+        filteredList.addAll(unFilteredOutputList);
         return filteredList;
     }
 
@@ -273,11 +268,11 @@ public class IngestMediaFilesInitiator {
      * @param outputList
      * @param outputStream
      */
-    protected void outputResult(List<MediaFileIngestParameters> outputList, OutputStream outputStream) {
+    protected void outputResult(List<MediaFileIngestOutputParameters> outputList, OutputStream outputStream) {
         boolean firstEntry = true;
         String output = " {\n"
                 + "     \"downloads\":[";
-        for (MediaFileIngestParameters mediaFileIngestParameters : outputList) {
+        for (MediaFileIngestOutputParameters mediaFileIngestParameters : outputList) {
             String params = "\n"
                     + "         {\n"
                     + "            \"fileID\" : \"" +          mediaFileIngestParameters.youseeFileName + "\",\n"

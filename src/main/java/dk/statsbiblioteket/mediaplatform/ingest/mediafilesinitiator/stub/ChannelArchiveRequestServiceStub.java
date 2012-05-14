@@ -1,14 +1,10 @@
-package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock;
+package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.stub;
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-
-import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
@@ -18,8 +14,10 @@ ChannelArchiveRequestServiceIF {
 
     private ArrayList<ChannelArchiveRequest> cars = new ArrayList<ChannelArchiveRequest>();
     
+    @SuppressWarnings("deprecation")
     @Override
     public List<ChannelArchiveRequest> getValidRequests(Date fromDate, Date toDate) {
+        cars.add(createRequest(1, "dr1", WeekdayCoverage.DAILY, new Time(8, 0, 0), new Time(20,0 ,0), new Date(0), new Date(2030, 1, 1)));
         return cars;
     }
 
