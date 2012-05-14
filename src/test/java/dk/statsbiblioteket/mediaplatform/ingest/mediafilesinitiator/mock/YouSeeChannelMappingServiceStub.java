@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock;
 
 import java.util.Date;
+import java.util.List;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.YouSeeChannelMapping;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ServiceException;
@@ -30,6 +31,30 @@ public class YouSeeChannelMappingServiceStub implements
         youSeeChannelMapping.setFromDate(new Date(0));
         youSeeChannelMapping.setToDate(new Date());
         return youSeeChannelMapping;
+    }
+
+    @Override
+    public List<YouSeeChannelMapping> getAllMappings() throws ServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void create(YouSeeChannelMapping arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void delete(YouSeeChannelMapping arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void update(YouSeeChannelMapping arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

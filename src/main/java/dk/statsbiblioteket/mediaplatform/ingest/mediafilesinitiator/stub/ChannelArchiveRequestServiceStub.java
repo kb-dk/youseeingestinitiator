@@ -8,6 +8,7 @@ import java.util.List;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ServiceException;
 
 public class ChannelArchiveRequestServiceStub implements
 ChannelArchiveRequestServiceIF {
@@ -37,5 +38,23 @@ ChannelArchiveRequestServiceIF {
         car.setFromDate(fromDate2);
         car.setToDate(toDate2);
         return car;
+    }
+
+    @Override
+    public void delete(ChannelArchiveRequest arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void insert(ChannelArchiveRequest arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void update(ChannelArchiveRequest arg0) throws ServiceException {
+        // TODO Auto-generated method stub
+        
     }
 }
