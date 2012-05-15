@@ -6,6 +6,12 @@
   <version>0.1.0-SNAPSHOT</version>
   <name>Ingest Initiator Medie Files</name>
   <description>Initiates ingest of medie files</description>
+  
+    <scm>
+        <connection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</connection>
+        <url>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</url>
+        <developerConnection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
+    </scm>
 
   <parent>
     <groupId>dk.statsbiblioteket.sbprojects</groupId>
