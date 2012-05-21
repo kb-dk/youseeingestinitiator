@@ -9,7 +9,10 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.stub.ChannelArchiveRequestServiceStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.stub.YouSeeChannelMappingServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.model.persistence.HibernateUtil;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestService;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.YouSeeChannelMappingService;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.YouSeeChannelMappingServiceIF;
 
 public class IngestMediaFilesInitiatorFactory {
@@ -42,15 +45,15 @@ public class IngestMediaFilesInitiatorFactory {
         }
         File hibernateConfigFile = new File(hibernateConfigFilePath);
         log.debug("Hibernate config file: " + hibernateConfigFile.getAbsolutePath());
-        //HibernateUtil.initialiseFactory(hibernateConfigFile);
+        HibernateUtil.initialiseFactory(hibernateConfigFile);
         
         // Setup rest
         OutputStream outputStream = System.out;
-        // TODO: Use real services when ready
-        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
-        //YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
-        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
-        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
+
+        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
+        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
+        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
+        //((YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
         IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, outputStream);
         return ingestInitiatorMediaFiles;
     }
