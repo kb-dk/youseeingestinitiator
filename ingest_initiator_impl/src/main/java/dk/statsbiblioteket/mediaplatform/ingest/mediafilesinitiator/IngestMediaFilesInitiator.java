@@ -74,20 +74,26 @@ public class IngestMediaFilesInitiator {
      * @throws NullPointerException if dateOfIngest is null
      */
     public void initiateIngest(DateTime dateOfIngest) {
-        log.debug("Initiated ingest based on date: " + dateOfIngest);
-        // Infer period to ingest
-        int daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
-        DateTime toDate = dateOfIngest;
-        DateTime fromDate = dateOfIngest.minusDays(daysYouSeeKeepsRecordings-1); // dateOfIngest counts as one day
-        log.info("Ingestion periode: " + fromDate + " to " + toDate);
-        List<ChannelArchiveRequest> caRequests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
-        log.debug("Found requests: " + caRequests);
-        List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
-        log.debug("Full file list: " + fullFileList);
-        List<MediaFileIngestOutputParameters> filteredFileList = filter(new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
-        log.debug("Filtered file list: " + filteredFileList);
-        outputResult(filteredFileList, outputStream);
-        log.debug("Done initiating ingest based on date: " + dateOfIngest);
+        try {
+            log.debug("Initiated ingest based on date: " + dateOfIngest);
+            // Infer period to ingest
+            int daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
+            DateTime toDate = dateOfIngest;
+            DateTime fromDate = dateOfIngest.minusDays(daysYouSeeKeepsRecordings-1); // dateOfIngest counts as one day
+            log.info("Ingestion periode: " + fromDate + " to " + toDate);
+            List<ChannelArchiveRequest> caRequests;
+            caRequests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
+            log.debug("Found requests size: " + caRequests.size());
+            List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
+            log.debug("Full file list size: " + fullFileList.size());
+            List<MediaFileIngestOutputParameters> filteredFileList = filter(new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
+            log.debug("Filtered file list size: " + filteredFileList.size());
+            outputResult(filteredFileList, outputStream);
+            log.debug("Done initiating ingest based on date: " + dateOfIngest);
+        } catch (Exception e) {
+            log.error("An error occured: " + e.getMessage(), e);
+            throw new RuntimeException("An error occured initiating ingest.", e);
+        }
     }
 
     protected List<MediaFileIngestOutputParameters> inferFilesToIngest(List<ChannelArchiveRequest> caRequests, DateTime fromDate, DateTime toDate) {

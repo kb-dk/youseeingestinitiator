@@ -59,4 +59,10 @@ ChannelArchiveRequestServiceIF {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public List<ChannelArchiveRequest> getAllRequests() throws ServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
