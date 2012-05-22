@@ -10,7 +10,7 @@ import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ServiceException;
 
-public class ChannelArchiveRequestServiceStub implements
+public class ChannelArchiveRequestServiceTmpStub implements
 ChannelArchiveRequestServiceIF {
 
     private ArrayList<ChannelArchiveRequest> cars = new ArrayList<ChannelArchiveRequest>();

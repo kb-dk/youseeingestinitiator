@@ -38,23 +38,33 @@ import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
  */
 public class IngestMediaFilesInitiator {
 
-    private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final String YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY = "yousee.recordings.days.to.keep";
+    private static final String EXPECTED_DURATION_OF_FILE_INGEST_PROCESS_KEY = "expected.duration.of.file.ingest.process";
+    private static final String FINAL_WORK_FLOW_COMPONENT_NAME_KEY = "final.work.flow.component.name";
+    private static final String FINAL_WORK_FLOW_STATE_NAME_KEY = "final.work.flow.state.name";
+    
+    private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
-    private static final DateTimeFormatter filenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+    private static final DateTimeFormatter sbFilenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
 
-    private final Properties properties;
     private final ChannelArchiveRequestServiceIF channelArchiveRequestService;
     private final YouSeeChannelMappingServiceIF youSeeChannelMappingService;
     private final WorkFlowStateMonitorFacade workFlowStateMonitorFacade;
     private final OutputStream outputStream;
+    private final int daysYouSeeKeepsRecordings;
+    private final int expectedDurationOfFileIngestProcess;
+    private final String finalWorkFlowComponentName;
+    private final String finalWorkFlowStateName;
 
     public IngestMediaFilesInitiator(Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, YouSeeChannelMappingServiceIF youSeeChannelMappingService, WorkFlowStateMonitorFacade workFlowStateMonitorFacade, OutputStream outputStream) {
-        this.properties = properties;
         this.channelArchiveRequestService = channelArchiveRequestDAO;
         this.youSeeChannelMappingService = youSeeChannelMappingService;
         this.workFlowStateMonitorFacade = workFlowStateMonitorFacade;
         this.outputStream = outputStream;
+        this.daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
+        this.expectedDurationOfFileIngestProcess = Integer.parseInt(properties.getProperty(EXPECTED_DURATION_OF_FILE_INGEST_PROCESS_KEY));
+        this.finalWorkFlowComponentName = properties.getProperty(FINAL_WORK_FLOW_COMPONENT_NAME_KEY);
+        this.finalWorkFlowStateName = properties.getProperty(FINAL_WORK_FLOW_STATE_NAME_KEY);
     }
 
     /**
@@ -70,14 +80,12 @@ public class IngestMediaFilesInitiator {
      * </ol>
      * 
      * 
-     * @param dateOfIngest Last date in download period.
-     * @throws NullPointerException if dateOfIngest is null
+     * @param dateOfIngest date and time when the process was started
      */
     public void initiateIngest(DateTime dateOfIngest) {
         try {
             log.debug("Initiated ingest based on date: " + dateOfIngest);
             // Infer period to ingest
-            int daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
             DateTime toDate = dateOfIngest;
             DateTime fromDate = dateOfIngest.minusDays(daysYouSeeKeepsRecordings-1); // dateOfIngest counts as one day
             log.info("Ingestion periode: " + fromDate + " to " + toDate);
@@ -86,7 +94,7 @@ public class IngestMediaFilesInitiator {
             log.debug("Found requests size: " + caRequests.size());
             List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
             log.debug("Full file list size: " + fullFileList.size());
-            List<MediaFileIngestOutputParameters> filteredFileList = filter(new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
+            List<MediaFileIngestOutputParameters> filteredFileList = filter(dateOfIngest, new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
             log.debug("Filtered file list size: " + filteredFileList.size());
             outputResult(filteredFileList, outputStream);
             log.debug("Done initiating ingest based on date: " + dateOfIngest);
@@ -196,9 +204,9 @@ public class IngestMediaFilesInitiator {
         String filenameSB = sbChannelID
                 + "_yousee."
                 + startDateInSecondsSince1970 + "-"
-                + filenameDateFormatter.print(startDate) + "_"
+                + sbFilenameDateFormatter.print(startDate) + "_"
                 + endDateInSecondsSince1970 + "-"
-                + filenameDateFormatter.print(endDate)
+                + sbFilenameDateFormatter.print(endDate)
                 + "_ftp.ts";
         return filenameSB;
     }
@@ -290,26 +298,29 @@ public class IngestMediaFilesInitiator {
         return caRequestActive;
     }
 
-    protected List<MediaFileIngestOutputParameters> filter(List<MediaFileIngestOutputParameters> unFilteredOutputList) {
+    protected List<MediaFileIngestOutputParameters> filter(DateTime dateOfIngest, List<MediaFileIngestOutputParameters> unFilteredOutputList) {
         List<MediaFileIngestOutputParameters> filteredList = new ArrayList<MediaFileIngestOutputParameters>();
-        for (MediaFileIngestOutputParameters outputParams : unFilteredOutputList) {
-            if (shouldInititateIngest(outputParams.getFileNameSB())) {
-                
+        for (MediaFileIngestOutputParameters fileIngest : unFilteredOutputList) {
+            if (shouldInititateIngest(dateOfIngest, fileIngest.getFileNameSB())) {
+                filteredList.add(fileIngest);
             }
         }
-        filteredList.addAll(unFilteredOutputList);
         return filteredList;
     }
 
-    protected boolean shouldInititateIngest(String fileNameSB) {
-        String sbFileId = "dr1_20101218100000_20101218110000.mux";
-        
-        State state = workFlowStateMonitorFacade.getLastWorkFlowStateForEntity(sbFileId);
+    protected boolean shouldInititateIngest(DateTime dateOfIngest, String fileNameSB) {
+        State state = workFlowStateMonitorFacade.getLastWorkFlowStateForEntity(fileNameSB);
         log.info(state);
-        
-
-        // TODO Auto-generated method stub
-        return false;
+        boolean initiateIngest = true;
+        if (state != null) {
+            if (state.getComponent().equals(finalWorkFlowComponentName)
+                    && state.getStateName().equals(finalWorkFlowStateName)) {
+                initiateIngest = false;
+            } else if (state.getDate().after(dateOfIngest.minusHours(expectedDurationOfFileIngestProcess).toDate())) {
+                initiateIngest = false;
+            }
+        } 
+        return initiateIngest;
     }
 
     /**

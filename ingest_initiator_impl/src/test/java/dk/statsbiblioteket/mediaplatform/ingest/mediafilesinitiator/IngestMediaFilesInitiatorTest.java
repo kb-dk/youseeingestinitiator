@@ -8,11 +8,11 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -21,24 +21,30 @@ import org.junit.Before;
 import org.junit.Test;
 
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
-import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.ChannelArchiveRequestServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.ChannelArchiveRequestServiceTestStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.WorkFlowStateMonitorFacadeStub;
-import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceTestStub;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
+import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
 
 public class IngestMediaFilesInitiatorTest {
 
-    private Level testLogLevel = Level.DEBUG;
     private Logger log = null;
+    private Properties defaultProperties;
 
     public IngestMediaFilesInitiatorTest() {
-
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
-        System.out.println("Log level set to: " + testLogLevel);
-        Logger.getRootLogger().setLevel(testLogLevel);
-        log = Logger.getLogger(IngestMediaFilesInitiator.class);
+        defaultProperties = new Properties();
+        defaultProperties.put("hibernate.config.file.path", "/Users/henningbottger/projects/yousee/dev/ingest_component/ingest_initiator_media_file/src/test/config/ingest_initiator_media_files_CLI.hibernate.cfg.xml");
+        defaultProperties.put("log4j.config.file.path", "src/test/config/ingest_initiator_media_files_CLI.log4j.xml");
+        defaultProperties.put("yousee.recordings.days.to.keep", "28");
+        defaultProperties.put("workflow.state.monitor.base.url", "http://localhost:9998/workflowstatemonitor");
+        defaultProperties.put("expected.duration.of.file.ingest.process", "12");
+        defaultProperties.put("final.work.flow.component.name", "Yousee complete workflow final step");
+        defaultProperties.put("final.work.flow.state.name", "Completed");
+        System.getProperties().put("log4j.defaultInitOverride", "true");
+        DOMConfigurator.configure(defaultProperties.getProperty("log4j.config.file.path"));
+        log = Logger.getLogger(IngestMediaFilesInitiatorTest.class);
     }
 
     @Before
@@ -52,7 +58,12 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void outputFormatTest() throws IOException {
         ByteArrayOutputStream byteArrayoutputStream = new ByteArrayOutputStream();
-        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(null, null, null, null, System.out);//outputPrintWriter);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null,
+                null, 
+                null, 
+                System.out);
 
         List<MediaFileIngestOutputParameters> outputList = new ArrayList<MediaFileIngestOutputParameters>();
         outputList.add(new MediaFileIngestOutputParameters("dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts", "DR HD_20120915_100000_20120915_110000.mux", "drhd", "DR HD", new DateTime(2012,9,15,10,0,0), new DateTime(2012,9,15,11,0,0)));
@@ -88,11 +99,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferFilesToIngestFilenameTest() throws IOException {
         DateTime dateToCheck = new DateTime(2010, 3, 1, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
-        ChannelArchiveRequest caRequest = ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(0, 0, 0), new Time(1, 0, 0), dateToCheck.minusDays(3).toDate(), dateToCheck.plusDays(3).toDate());
+        ChannelArchiveRequest caRequest = ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(0, 0, 0), new Time(1, 0, 0), dateToCheck.minusDays(3).toDate(), dateToCheck.plusDays(3).toDate());
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
         Set<MediaFileIngestOutputParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
@@ -104,11 +115,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
 
@@ -123,11 +134,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelTwoWeeksTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
 
@@ -142,11 +153,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY_TO_THURSDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY_TO_THURSDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
 
@@ -161,11 +172,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelDailyOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
 
@@ -180,12 +191,12 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void inferTotalFilesToDownloadOneChannelOverlappingRequestOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
-        caRequests.add(ChannelArchiveRequestServiceStub.createRequest(1L, "dr1", WeekdayCoverage.THURSDAY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.DAILY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
+        caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.THURSDAY, new Time(0, 0, 0), new Time(23, 59, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(), 
+                new YouSeeChannelMappingServiceTestStub(), 
                 null,
                 System.out);
 
@@ -210,9 +221,9 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testGetSBFileID_checkSBFilename() {
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(),
+                new YouSeeChannelMappingServiceTestStub(),
                 null,
                 System.out);
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -222,15 +233,79 @@ public class IngestMediaFilesInitiatorTest {
     }
     
     @Test
-    public void testShouldInititateIngest_connection() {
+    public void testShouldInititateIngest_notIngested() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub();
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
                 null, 
-                null, 
-                new YouSeeChannelMappingServiceStub(),
-                new WorkFlowStateMonitorFacadeStub(),
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
                 System.out);
-        String fileNameSB = "";
-        initiator.shouldInititateIngest(fileNameSB);
-        // Test that no exception is thrown
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(true, result);
+    }    
+    
+    
+    @Test
+    public void testShouldInititateIngest_failedIngest() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-20-03.00.00").toDate();
+        String component = "yousee Downloader";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Starting";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(true, result);
+    }    
+    
+    @Test
+    public void testShouldInititateIngest_completedIngest() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-20-03.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Completed";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(false, result);
+    }    
+    
+    @Test
+    public void testShouldInititateIngest_recentlyStartedIngest() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Completed";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(false, result);
     }    
 }

@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -10,13 +11,23 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.Entity;
 import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
 
 public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonitorFacade {
 
-    private static final Logger log = Logger.getLogger(WorkFlowStateMonitorWebServiceFacade.class);;
+    private static final String WORKFLOW_STATE_MONITOR_BASE_URL_KEY = "workflow.state.monitor.base.url";
+    private static final Logger log = Logger.getLogger(WorkFlowStateMonitorWebServiceFacade.class);
+    private static final GenericType<List<State>> genericTypeStateList = new GenericType<List<State>>() {};
 
+    private final String workFlowStateMonitorBaseUrl;
+
+    public WorkFlowStateMonitorWebServiceFacade(Properties properties) {
+        this.workFlowStateMonitorBaseUrl = properties.getProperty(WORKFLOW_STATE_MONITOR_BASE_URL_KEY);
+        if (this.workFlowStateMonitorBaseUrl == null) {
+            throw new RuntimeException("Missing property: " + WORKFLOW_STATE_MONITOR_BASE_URL_KEY);
+        }
+    }
+    
     /* (non-Javadoc)
      * @see dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.WorkFlowStateMonitorFacade#getWorkFlowStateForEntity(java.lang.String)
      */
@@ -24,15 +35,9 @@ public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonito
     public State getLastWorkFlowStateForEntity(String sbFileId) {
         ClientConfig config = new DefaultClientConfig();
         Client client = Client.create(config);
-        WebResource service = client.resource("http://canopus:34080/workflowstatemonitor/");
-        
-        GenericType<List<Entity>> genericTypeEntities = new GenericType<List<Entity>>() {};
-        List<Entity> entities = service.path("entities").get(genericTypeEntities);//path("dr1_20101218100000_20101218110000.mux").queryParam("onlyLast", "true")
-        log.info(entities);
-    
-        GenericType<List<State>> genericTypeStates = new GenericType<List<State>>() {};
-        List<State> states = service.path("states").path(sbFileId).queryParam("onlyLast", "true").get(genericTypeStates);
-        
+        WebResource webResource = client.resource(workFlowStateMonitorBaseUrl).path("states").path(sbFileId).queryParam("onlyLast", "true");
+        List<State> states = webResource.get(genericTypeStateList);
+        log.debug("Found states: " + states);
         State state = null;
         if (!states.isEmpty()) {
             state = states.get(0);
