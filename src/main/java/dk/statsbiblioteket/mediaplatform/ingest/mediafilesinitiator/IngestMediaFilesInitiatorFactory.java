@@ -50,11 +50,11 @@ public class IngestMediaFilesInitiatorFactory {
         // Setup rest
         OutputStream outputStream = System.out;
 
-        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
-        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
+        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
+        //YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
+        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
+        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
         WorkFlowStateMonitorFacade workFlowStateMonitorFacade = new WorkFlowStateMonitorWebServiceFacade();
-        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
-        //((YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
         IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, workFlowStateMonitorFacade, outputStream);
         return ingestInitiatorMediaFiles;
     }
