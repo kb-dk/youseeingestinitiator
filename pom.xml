@@ -3,15 +3,20 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dk.statsbiblioteket.mediaplatform.ingest</groupId>
   <artifactId>ingest_initiator_media_files</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
-  <name>Ingest Initiator Medie Files</name>
+  <version>0.4.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Ingest Initiator Medie Files Parent</name>
   <description>Initiates ingest of medie files</description>
-  
-    <scm>
-        <connection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</connection>
-        <url>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</url>
-        <developerConnection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
-    </scm>
+  <modules>
+    <module>ingest_initiator_impl</module>
+    <module>ingest_initiator_bundle</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</connection>
+    <url>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</url>
+    <developerConnection>scm:git:git://github.com/statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
+  </scm>
 
   <parent>
     <groupId>dk.statsbiblioteket.sbprojects</groupId>
@@ -31,70 +36,4 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <dependencies>
-    <dependency>
-      <groupId>dk.statsbiblioteket.mediaplatform</groupId>
-      <artifactId>channelarchivingrequester</artifactId>
-      <version>0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>dk.statsbiblioteket.mediaplatform</groupId>
-      <!-- artifactId>workflowstatemonitor</artifactId-->
-      <artifactId>model</artifactId>
-      <version>0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-bundle</artifactId>
-      <version>1.11</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-    <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>  
-      <version>1.9.0</version> 
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.2</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

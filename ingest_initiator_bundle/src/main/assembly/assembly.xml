@@ -1,0 +1,21 @@
+<assembly>
+    <id>bundle</id>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory></outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>*:*</include>
+            </includes>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+</assembly>
