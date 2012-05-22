@@ -31,10 +31,14 @@ public class MediaFileIngestOutputParameters implements Comparable<MediaFileInge
     public final DateTime endDate; // YYYYMMDDHHMMSS
     
     /** The filename of the media as found on the YouSee ftp-server */
-    public final String youseeFileName;
+    public final String fileNameYouSee;
 
-    public MediaFileIngestOutputParameters(String youseeFilename, String channelIDSB, String channelIDYouSee, DateTime startDate, DateTime endDate) {
-        this.youseeFileName = youseeFilename;
+    /** The filename of the media in the archive */
+    public final String fileNameSB;
+
+    public MediaFileIngestOutputParameters(String filenameSB, String youseeFilename, String channelIDSB, String channelIDYouSee, DateTime startDate, DateTime endDate) {
+        this.fileNameYouSee = youseeFilename;
+        this.fileNameSB = filenameSB;
         this.channelIDSB = channelIDSB;
         this.channelIDYouSee = channelIDYouSee;
         this.startDate = startDate;
@@ -57,13 +61,25 @@ public class MediaFileIngestOutputParameters implements Comparable<MediaFileInge
         return endDate;
     }
 
-    public String getYouseeFileName() {
-        return youseeFileName;
+    public String getFileNameYouSee() {
+        return fileNameYouSee;
+    }
+
+    public String getFileNameSB() {
+        return fileNameSB;
     }
 
     @Override
     public int compareTo(MediaFileIngestOutputParameters other) {
         return this.startDate.compareTo(other.startDate);
+    }
+
+    @Override
+    public String toString() {
+        return "MediaFileIngestOutputParameters [channelIDSB=" + channelIDSB
+                + ", channelIDYouSee=" + channelIDYouSee + ", startDate="
+                + startDate + ", endDate=" + endDate + ", fileNameYouSee="
+                + fileNameYouSee + ", fileNameSB=" + fileNameSB + "]";
     }
 
     @Override
@@ -76,9 +92,11 @@ public class MediaFileIngestOutputParameters implements Comparable<MediaFileInge
                 + ((channelIDYouSee == null) ? 0 : channelIDYouSee.hashCode());
         result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
         result = prime * result
-                + ((startDate == null) ? 0 : startDate.hashCode());
+                + ((fileNameSB == null) ? 0 : fileNameSB.hashCode());
         result = prime * result
-                + ((youseeFileName == null) ? 0 : youseeFileName.hashCode());
+                + ((fileNameYouSee == null) ? 0 : fileNameYouSee.hashCode());
+        result = prime * result
+                + ((startDate == null) ? 0 : startDate.hashCode());
         return result;
     }
 
@@ -106,24 +124,21 @@ public class MediaFileIngestOutputParameters implements Comparable<MediaFileInge
                 return false;
         } else if (!endDate.equals(other.endDate))
             return false;
+        if (fileNameSB == null) {
+            if (other.fileNameSB != null)
+                return false;
+        } else if (!fileNameSB.equals(other.fileNameSB))
+            return false;
+        if (fileNameYouSee == null) {
+            if (other.fileNameYouSee != null)
+                return false;
+        } else if (!fileNameYouSee.equals(other.fileNameYouSee))
+            return false;
         if (startDate == null) {
             if (other.startDate != null)
                 return false;
         } else if (!startDate.equals(other.startDate))
             return false;
-        if (youseeFileName == null) {
-            if (other.youseeFileName != null)
-                return false;
-        } else if (!youseeFileName.equals(other.youseeFileName))
-            return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "MediaFileIngestParameters [channelIDSB=" + channelIDSB
-                + ", channelIDYouSee=" + channelIDYouSee + ", startDate="
-                + startDate + ", endDate=" + endDate + ", youseeFileName="
-                + youseeFileName + "]";
     }
 }

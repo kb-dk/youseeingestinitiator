@@ -52,9 +52,10 @@ public class IngestMediaFilesInitiatorFactory {
 
         ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
         YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
+        WorkFlowStateMonitorFacade workFlowStateMonitorFacade = new WorkFlowStateMonitorWebServiceFacade();
         //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceStub();
         //((YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceStub();
-        IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, outputStream);
+        IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, workFlowStateMonitorFacade, outputStream);
         return ingestInitiatorMediaFiles;
     }
 

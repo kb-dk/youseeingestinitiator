@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -16,10 +18,12 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ServiceException;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.YouSeeChannelMappingServiceIF;
+import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
 
 /**
  * Formålet med denne klasse er at starte et workflow til ingest af nye mediefiler i Medieplatformen.
@@ -36,17 +40,20 @@ public class IngestMediaFilesInitiator {
 
     private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final String YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY = "yousee.recordings.days.to.keep";
-    private static final DateTimeFormatter outputDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter filenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
 
     private final Properties properties;
     private final ChannelArchiveRequestServiceIF channelArchiveRequestService;
     private final YouSeeChannelMappingServiceIF youSeeChannelMappingService;
+    private final WorkFlowStateMonitorFacade workFlowStateMonitorFacade;
     private final OutputStream outputStream;
 
-    public IngestMediaFilesInitiator(Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, YouSeeChannelMappingServiceIF youSeeChannelMappingService, OutputStream outputStream) {
+    public IngestMediaFilesInitiator(Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, YouSeeChannelMappingServiceIF youSeeChannelMappingService, WorkFlowStateMonitorFacade workFlowStateMonitorFacade, OutputStream outputStream) {
         this.properties = properties;
         this.channelArchiveRequestService = channelArchiveRequestDAO;
         this.youSeeChannelMappingService = youSeeChannelMappingService;
+        this.workFlowStateMonitorFacade = workFlowStateMonitorFacade;
         this.outputStream = outputStream;
     }
 
@@ -132,11 +139,9 @@ public class IngestMediaFilesInitiator {
                     DateTime startDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(), hour, 0);
                     DateTime endDate = startDate.plusHours(1);
                     String youseeChannelID = youSeeChannelMappingService.getUniqueMappingFromSbChannelId(sbChannelID, startDate.toDate()).getYouSeeChannelId();
-                    String youseeFilename = 
-                            youseeChannelID + "_"
-                            + outputDateFormatter.print(startDate) + "_"
-                            + outputDateFormatter.print(endDate) + ".mux";
-                    filesToIngest.add(new MediaFileIngestOutputParameters(youseeFilename, sbChannelID, youseeChannelID, startDate, endDate));
+                    String filenameYouSee = getYouSeeFilename(startDate, endDate, youseeChannelID);
+                    String filenameSB = getSBFileID(sbChannelID, startDate, endDate);
+                    filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
                     hour++;
                 }
             }
@@ -144,6 +149,52 @@ public class IngestMediaFilesInitiator {
             throw new RuntimeException("An unexpected error occured.", e);
         }
         return filesToIngest;
+    }
+
+    /**
+     * Infer the filename as expected on the YouSee server.
+     * 
+     * Filename format: "<YouSee_channel_id>_<start_date>_<end_date>.mux"
+     * 
+     * @param startDate
+     * @param endDate
+     * @param youseeChannelID
+     * @return
+     */
+    protected String getYouSeeFilename(DateTime startDate, DateTime endDate,
+            String youseeChannelID) {
+        String filenameYouSee = 
+                youseeChannelID + "_"
+                + youseeFilenameDateFormatter.print(startDate) + "_"
+                + youseeFilenameDateFormatter.print(endDate) + ".mux";
+        return filenameYouSee;
+    }
+
+    /**
+     * Infer the file id used in the archive. The file id is designed to match the format of the 
+     * Digital TV-recordings that the new workflow shall replace.
+     * 
+     * Format <channel_id>.<seconds_since_1970-01-01>-<
+     * 
+     * Old digital filename: mux1.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
+     * New YouSee filename: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
+     * 
+     * @param sbChannelID 
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    protected String getSBFileID(String sbChannelID, DateTime startDate, DateTime endDate) {
+        Long startDateInSecondsSince1970 = startDate.getMillis() / 1000;
+        Long endDateInSecondsSince1970 = endDate.getMillis() / 1000;
+        String filenameSB = sbChannelID
+                + "_yousee."
+                + startDateInSecondsSince1970 + "-"
+                + filenameDateFormatter.print(startDate) + "_"
+                + endDateInSecondsSince1970 + "-"
+                + filenameDateFormatter.print(endDate)
+                + "_ftp.ts";
+        return filenameSB;
     }
 
     protected boolean isChannelArchiveRequestActive(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
@@ -235,10 +286,24 @@ public class IngestMediaFilesInitiator {
 
     protected List<MediaFileIngestOutputParameters> filter(List<MediaFileIngestOutputParameters> unFilteredOutputList) {
         List<MediaFileIngestOutputParameters> filteredList = new ArrayList<MediaFileIngestOutputParameters>();
-        log.warn("No filtering is implemented.");
-        // TODO: Do real stuff
+        for (MediaFileIngestOutputParameters outputParams : unFilteredOutputList) {
+            if (shouldInititateIngest(outputParams.getFileNameSB())) {
+                
+            }
+        }
         filteredList.addAll(unFilteredOutputList);
         return filteredList;
+    }
+
+    protected boolean shouldInititateIngest(String fileNameSB) {
+        String sbFileId = "dr1_20101218100000_20101218110000.mux";
+        
+        State state = workFlowStateMonitorFacade.getLastWorkFlowStateForEntity(sbFileId);
+        log.info(state);
+        
+
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**
@@ -275,9 +340,10 @@ public class IngestMediaFilesInitiator {
         for (MediaFileIngestOutputParameters mediaFileIngestParameters : outputList) {
             String params = "\n"
                     + "         {\n"
-                    + "            \"fileID\" : \"" +          mediaFileIngestParameters.youseeFileName + "\",\n"
-                    + "            \"startTime\" : \"" +       outputDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
-                    + "            \"endTime\" : \"" +         outputDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
+                    + "            \"fileID\" : \"" +          mediaFileIngestParameters.getFileNameSB() + "\",\n"
+                    + "            \"youSeeFilename\" : \"" +  mediaFileIngestParameters.getFileNameYouSee() + "\",\n"
+                    + "            \"startTime\" : \"" +       youseeFilenameDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
+                    + "            \"endTime\" : \"" +         youseeFilenameDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
                     + "            \"youseeChannelID\" : \"" + mediaFileIngestParameters.getChannelIDYouSee() + "\",\n"
                     + "            \"sbChannelID\" : \"" +     mediaFileIngestParameters.getChannelIDSB() + "\"\n"
                     + "         }";

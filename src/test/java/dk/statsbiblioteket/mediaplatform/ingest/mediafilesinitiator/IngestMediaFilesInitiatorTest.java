@@ -14,12 +14,15 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.ChannelArchiveRequestServiceStub;
+import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.WorkFlowStateMonitorFacadeStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceStub;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
@@ -49,11 +52,11 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void outputFormatTest() throws IOException {
         ByteArrayOutputStream byteArrayoutputStream = new ByteArrayOutputStream();
-        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(null, null, null, System.out);//outputPrintWriter);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(null, null, null, null, System.out);//outputPrintWriter);
 
         List<MediaFileIngestOutputParameters> outputList = new ArrayList<MediaFileIngestOutputParameters>();
-        outputList.add(new MediaFileIngestOutputParameters("DR HD_20120915_100000_20120915_110000.mux", "drhd", "DR HD", new DateTime(2012,9,15,10,0,0), new DateTime(2012,9,15,11,0,0)));
-        outputList.add(new MediaFileIngestOutputParameters("DR HD_20120915_110000_20120915_120000.mux", "drhd", "DR HD", new DateTime(2012,9,15,11,0,0), new DateTime(2012,9,15,12,0,0)));
+        outputList.add(new MediaFileIngestOutputParameters("dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts", "DR HD_20120915_100000_20120915_110000.mux", "drhd", "DR HD", new DateTime(2012,9,15,10,0,0), new DateTime(2012,9,15,11,0,0)));
+        outputList.add(new MediaFileIngestOutputParameters("dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts", "DR HD_20120915_110000_20120915_120000.mux", "drhd", "DR HD", new DateTime(2012,9,15,11,0,0), new DateTime(2012,9,15,12,0,0)));
         initiator.outputResult(outputList , byteArrayoutputStream);
 
         String actual = byteArrayoutputStream.toString();
@@ -61,14 +64,16 @@ public class IngestMediaFilesInitiatorTest {
                 " {\n"
                 + "     \"downloads\":[\n"
                 + "         {\n"
-                + "            \"fileID\" : \"DR HD_20120915_100000_20120915_110000.mux\",\n"
+                + "            \"fileID\" : \"dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts\",\n"
+                + "            \"youSeeFilename\" : \"DR HD_20120915_100000_20120915_110000.mux\",\n"
                 + "            \"startTime\" : \"20120915100000\",\n"
                 + "            \"endTime\" : \"20120915110000\",\n"
                 + "            \"youseeChannelID\" : \"DR HD\",\n"
                 + "            \"sbChannelID\" : \"drhd\"\n"
                 + "         },\n"
                 + "         {\n"
-                + "            \"fileID\" : \"DR HD_20120915_110000_20120915_120000.mux\",\n"
+                + "            \"fileID\" : \"dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts\",\n"
+                + "            \"youSeeFilename\" : \"DR HD_20120915_110000_20120915_120000.mux\",\n"
                 + "            \"startTime\" : \"20120915110000\",\n"
                 + "            \"endTime\" : \"20120915120000\",\n"
                 + "            \"youseeChannelID\" : \"DR HD\",\n"
@@ -88,10 +93,11 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
         Set<MediaFileIngestOutputParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
         MediaFileIngestOutputParameters mediaFileIngestParameters = new ArrayList<MediaFileIngestOutputParameters>(files).get(0);
-        String actual = mediaFileIngestParameters.getYouseeFileName();
+        String actual = mediaFileIngestParameters.getFileNameYouSee();
         assertEquals("DR1_20100301000000_20100301010000.mux", actual);
     }
 
@@ -103,6 +109,7 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -121,6 +128,7 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
 
         int youSeeKeepDuration = 14;
@@ -139,6 +147,7 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -157,6 +166,7 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -176,6 +186,7 @@ public class IngestMediaFilesInitiatorTest {
                 null, 
                 null, 
                 new YouSeeChannelMappingServiceStub(), 
+                null,
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -188,5 +199,38 @@ public class IngestMediaFilesInitiatorTest {
         int expectedNumberOfFiles = 7*24;
         assertEquals(expectedNumberOfFiles, actual.size());
     }
+
+    /** 
+     * Test that the new sb filenames of yousee downloaded files are similiar to old format
+     * 
+     * Old: mux1.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
+     * New: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_ftp.ts
+     * 
+     */
+    @Test
+    public void testGetSBFileID_checkSBFilename() {
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                null, 
+                null, 
+                new YouSeeChannelMappingServiceStub(),
+                null,
+                System.out);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        String actualFilename = initiator.getSBFileID("dr1", fmt.parseDateTime("2012-01-09-14.00.00"), fmt.parseDateTime("2012-01-09-15.00.00"));
+        String expectedFilename = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_ftp.ts";
+        assertEquals(expectedFilename, actualFilename);
+    }
     
+    @Test
+    public void testShouldInititateIngest_connection() {
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                null, 
+                null, 
+                new YouSeeChannelMappingServiceStub(),
+                new WorkFlowStateMonitorFacadeStub(),
+                System.out);
+        String fileNameSB = "";
+        initiator.shouldInititateIngest(fileNameSB);
+        // Test that no exception is thrown
+    }    
 }
