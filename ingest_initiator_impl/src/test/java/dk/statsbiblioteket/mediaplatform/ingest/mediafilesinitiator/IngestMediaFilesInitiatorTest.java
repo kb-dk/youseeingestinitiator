@@ -36,7 +36,7 @@ public class IngestMediaFilesInitiatorTest {
     public IngestMediaFilesInitiatorTest() {
         defaultProperties = new Properties();
         defaultProperties.put("hibernate.config.file.path", "/Users/henningbottger/projects/yousee/dev/ingest_component/ingest_initiator_media_file/src/test/config/ingest_initiator_media_files_CLI.hibernate.cfg.xml");
-        defaultProperties.put("log4j.config.file.path", "src/test/config/ingest_initiator_media_files_CLI.log4j.xml");
+        defaultProperties.put("log4j.config.file.path", "src/test/config/ingest_initiator_media_files_unittest.log4j.xml");
         defaultProperties.put("yousee.recordings.days.to.keep", "28");
         defaultProperties.put("workflow.state.monitor.base.url", "http://localhost:9998/workflowstatemonitor");
         defaultProperties.put("expected.duration.of.file.ingest.process", "12");
