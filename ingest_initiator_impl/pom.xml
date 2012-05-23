@@ -15,7 +15,7 @@
     <dependency>
       <groupId>dk.statsbiblioteket.mediaplatform</groupId>
       <artifactId>channelarchivingrequester</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.1.2</version>
     </dependency>
     <dependency>
       <groupId>dk.statsbiblioteket.mediaplatform</groupId>
