@@ -40,6 +40,8 @@ public class IngestMediaFilesInitiatorCLI {
                 System.err.println(" -date_to_initiate - date for which the ingest is based. Format yyyy-MM-dd.");
                 System.exit(1);
             }
+            // Bypass default initialization for Log4j. Circumvents log4j in CAR's package
+            System.getProperties().put("log4j.defaultInitOverride", "true");
             // Get properties
             System.err.println("Parsing property file from argument");
             String filenameAndPath = args[0];

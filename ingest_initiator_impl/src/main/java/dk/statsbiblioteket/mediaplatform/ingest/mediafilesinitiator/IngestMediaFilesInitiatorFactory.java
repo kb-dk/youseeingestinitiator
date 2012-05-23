@@ -11,6 +11,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.stub.ChannelArchiveRequestServiceTmpStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.stub.YouSeeChannelMappingServiceTmpStub;
+import dk.statsbiblioteket.mediaplatform.ingest.model.persistence.ChannelArchivingRequesterHibernateUtil;
 import dk.statsbiblioteket.mediaplatform.ingest.model.persistence.HibernateUtil;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestService;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
@@ -36,10 +37,10 @@ public class IngestMediaFilesInitiatorFactory {
         setupLog4j(properties);
         setupHibernate(properties);
         OutputStream outputStream = System.out;
-        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
-        //YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
-        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceTmpStub();
-        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceTmpStub();
+        ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
+        YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
+        //ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestServiceTmpStub();
+        //YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingServiceTmpStub();
         WorkFlowStateMonitorFacade workFlowStateMonitorFacade = new WorkFlowStateMonitorWebServiceFacade(properties);
         IngestMediaFilesInitiator ingestInitiatorMediaFiles = new IngestMediaFilesInitiator(properties, channelArchiveRequestService, youSeeChannelMappingService, workFlowStateMonitorFacade, outputStream);
         return ingestInitiatorMediaFiles;
@@ -64,7 +65,8 @@ public class IngestMediaFilesInitiatorFactory {
         }
         File hibernateConfigFile = new File(hibernateConfigFilePath);
         log.debug("Hibernate config file: " + hibernateConfigFile.getAbsolutePath());
-        HibernateUtil.initialiseFactory(hibernateConfigFile);
+        ChannelArchivingRequesterHibernateUtil.initialiseFactory(hibernateConfigFile); 
+        //HibernateUtil.initialiseFactory(hibernateConfigFile);
     }
 
 }
