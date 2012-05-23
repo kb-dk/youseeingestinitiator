@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -211,6 +209,7 @@ public class IngestMediaFilesInitiator {
         return filenameSB;
     }
 
+    /** Identifies whether a channel archiving request contributes to download a given day. */
     protected boolean isChannelArchiveRequestActive(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
         boolean caRequestActive = false;
         DateTime caRequestFromDate = new DateTime(caRequest.getFromDate()); 
@@ -298,6 +297,13 @@ public class IngestMediaFilesInitiator {
         return caRequestActive;
     }
 
+    /**
+     * Filter out files that have alrady been ingested
+     * 
+     * @param dateOfIngest date and time of the current ingest
+     * @param unFilteredOutputList List of all files that can be ingested
+     * @return List of files that have not been ingested
+     */
     protected List<MediaFileIngestOutputParameters> filter(DateTime dateOfIngest, List<MediaFileIngestOutputParameters> unFilteredOutputList) {
         List<MediaFileIngestOutputParameters> filteredList = new ArrayList<MediaFileIngestOutputParameters>();
         for (MediaFileIngestOutputParameters fileIngest : unFilteredOutputList) {
@@ -308,6 +314,19 @@ public class IngestMediaFilesInitiator {
         return filteredList;
     }
 
+    /**
+     * Evalutates if a file should be ingested or not.
+     * 
+     * Ingest NOT if:
+     * <ul>
+     *   <li>If file has succesfully been ingested.</li>  
+     *   <li>If ingest has been started within a property defined period of time, eg. 12 hours.</li> 
+     * </ul>
+     * 
+     * @param dateOfIngest date and time of the current ingest
+     * @param fileNameSB
+     * @return
+     */
     protected boolean shouldInititateIngest(DateTime dateOfIngest, String fileNameSB) {
         State state = workFlowStateMonitorFacade.getLastWorkFlowStateForEntity(fileNameSB);
         log.info(state);
@@ -326,29 +345,8 @@ public class IngestMediaFilesInitiator {
     /**
      * Converts ingest parameters to JSON format and outputs to the given PrintWriter.
      *
-     * Example of output:
-     * ---
-     * {
-     *     "downloads":[
-     *         {
-     *             "fileID" : "DR HD_20120915_100000_20120915_110000.mux",
-     *             "startTime" : "20120915100000",
-     *             "endTime" : "20120915110000",
-     *             "youseeChannelID" : "DR HD",
-     *             "sbChannelID" : "drhd"
-     *         },
-     *         {
-     *             "fileID" : "DR HD_20120915_110000_20120915_120000.mux",
-     *             "startTime" : "20120915110000",
-     *             "endTime" : "20120915120000",
-     *             "youseeChannelID" : "DR HD",
-     *             "sbChannelID" : "drhd"
-     *         }
-     *     ]
-     * }
-     *---
-     * @param outputList
-     * @param outputStream
+     * @param outputList of files that must be ingested
+     * @param outputStream Where output is directed
      */
     protected void outputResult(List<MediaFileIngestOutputParameters> outputList, OutputStream outputStream) {
         boolean firstEntry = true;
