@@ -13,8 +13,8 @@
 
   <scm>
     <url>https://github.com/statsbiblioteket/ingest_initiator_media_files</url>
-    <connection>scm:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</connection>
-    <developerConnection>scm:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
+    <connection>scm:git:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</connection>
+    <developerConnection>scm:git:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
   </scm>
 
   <parent>
