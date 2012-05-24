@@ -3,6 +3,9 @@ package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -33,15 +36,12 @@ public class IngestMediaFilesInitiatorTest {
     private Logger log = null;
     private Properties defaultProperties;
 
-    public IngestMediaFilesInitiatorTest() {
+    public IngestMediaFilesInitiatorTest() throws IOException {
+        File propertyFile = new File("src/test/config/ingest_initiator_media_files_unittest.properties");
+        FileInputStream in = new FileInputStream(propertyFile);
         defaultProperties = new Properties();
-        defaultProperties.put("hibernate.config.file.path", "/Users/henningbottger/projects/yousee/dev/ingest_component/ingest_initiator_media_file/src/test/config/ingest_initiator_media_files_CLI.hibernate.cfg.xml");
-        defaultProperties.put("log4j.config.file.path", "src/test/config/ingest_initiator_media_files_unittest.log4j.xml");
-        defaultProperties.put("yousee.recordings.days.to.keep", "28");
-        defaultProperties.put("workflow.state.monitor.base.url", "http://localhost:9998/workflowstatemonitor");
-        defaultProperties.put("expected.duration.of.file.ingest.process", "12");
-        defaultProperties.put("final.work.flow.component.name", "Yousee complete workflow final step");
-        defaultProperties.put("final.work.flow.state.name", "Completed");
+        defaultProperties.load(in);
+        in.close();
         System.getProperties().put("log4j.defaultInitOverride", "true");
         DOMConfigurator.configure(defaultProperties.getProperty("log4j.config.file.path"));
         log = Logger.getLogger(IngestMediaFilesInitiatorTest.class);
@@ -275,7 +275,7 @@ public class IngestMediaFilesInitiatorTest {
         Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-20-03.00.00").toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
-        String stateName = "Completed";
+        String stateName = "Done";
         WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
         IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
                 defaultProperties, 
