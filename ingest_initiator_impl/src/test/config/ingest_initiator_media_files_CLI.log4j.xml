@@ -5,7 +5,7 @@
 
   <!-- Error log for serious problems -->
   <appender name="error_log" class="org.apache.log4j.RollingFileAppender">
-    <param name="file" value="ingest_media_files_initiator.error.log"></param>
+    <param name="file" value="target/ingest_media_files_initiator.error.log"></param>
     <param name="MaxBackupIndex" value="20" />
     <param name="Encoding" value="UTF-8" />
     <layout class="org.apache.log4j.PatternLayout">
@@ -22,7 +22,7 @@
 
   <!-- a debug logger. minimum logging level set as needed -->
   <appender name="debug_log" class="org.apache.log4j.RollingFileAppender">
-    <param name="file" value="ingest_media_files_initiator.debug.log"></param>
+    <param name="file" value="target/ingest_media_files_initiator.debug.log"></param>
     <param name="MaxBackupIndex" value="20" />
     <param name="Encoding" value="UTF-8" />
     <layout class="org.apache.log4j.PatternLayout">
