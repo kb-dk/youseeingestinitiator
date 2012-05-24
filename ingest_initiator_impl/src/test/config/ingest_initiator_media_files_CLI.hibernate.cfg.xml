@@ -52,27 +52,6 @@
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
         <!-- mapped entities -->
-        <!-- mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.MachineConfiguration"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.DigitalChannelRecordingStream"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.Pid"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.DigitalTVRecordingSource"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.RecordingSource"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.Channel"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.scheduler.model.ChannelRecordingStream"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.RitzauProgram" />
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.TransportStreamChannel" />
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.TransportStreamFile" />
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.ChannelMapping" />
-        <mapping class="dk.statsbiblioteket.digitaltv.tvmeter.downloader.TVMeterFile" />
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.RitzauProgramAnnotation" />
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.BartFile"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.tvmeter.parser.model.AdLogLine"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.tvmeter.parser.TvmeterProgram"/>
-         <mapping class="dk.statsbiblioteket.digitaltv.tvmeter.parser.TVMeterChannelMapping"/>
-         <mapping class="dk.statsbiblioteket.digitaltv.access.model.CompositeProgram"/>
-        <mapping class="dk.statsbiblioteket.DerbyHibernateLobTestcase"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.tv2regional.TV2RegionalFile"/>
-        <mapping class="dk.statsbiblioteket.digitaltv.access.model.RitzauChannelId2SBChannelMappingConfigurationState"/-->
         <mapping class="dk.statsbiblioteket.mediaplatform.ingest.model.YouSeeChannelMapping" />
         <mapping class="dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest"/>
 

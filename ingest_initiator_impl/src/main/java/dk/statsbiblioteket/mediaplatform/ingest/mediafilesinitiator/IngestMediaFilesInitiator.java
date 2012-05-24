@@ -92,7 +92,7 @@ public class IngestMediaFilesInitiator {
             log.debug("Found requests size: " + caRequests.size());
             List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
             log.debug("Full file list size: " + fullFileList.size());
-            List<MediaFileIngestOutputParameters> filteredFileList = filter(dateOfIngest, new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
+            List<MediaFileIngestOutputParameters> filteredFileList = filterOutFilesAlreadyIngested(dateOfIngest, new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
             log.debug("Filtered file list size: " + filteredFileList.size());
             outputResult(filteredFileList, outputStream);
             log.debug("Done initiating ingest based on date: " + dateOfIngest);
@@ -304,7 +304,7 @@ public class IngestMediaFilesInitiator {
      * @param unFilteredOutputList List of all files that can be ingested
      * @return List of files that have not been ingested
      */
-    protected List<MediaFileIngestOutputParameters> filter(DateTime dateOfIngest, List<MediaFileIngestOutputParameters> unFilteredOutputList) {
+    protected List<MediaFileIngestOutputParameters> filterOutFilesAlreadyIngested(DateTime dateOfIngest, List<MediaFileIngestOutputParameters> unFilteredOutputList) {
         List<MediaFileIngestOutputParameters> filteredList = new ArrayList<MediaFileIngestOutputParameters>();
         for (MediaFileIngestOutputParameters fileIngest : unFilteredOutputList) {
             if (shouldInititateIngest(dateOfIngest, fileIngest.getFileNameSB())) {
@@ -332,8 +332,7 @@ public class IngestMediaFilesInitiator {
         log.info(state);
         boolean initiateIngest = true;
         if (state != null) {
-            if (state.getComponent().equals(finalWorkFlowComponentName)
-                    && state.getStateName().equals(finalWorkFlowStateName)) {
+            if (state.getStateName().equals(finalWorkFlowStateName)) {
                 initiateIngest = false;
             } else if (state.getDate().after(dateOfIngest.minusHours(expectedDurationOfFileIngestProcess).toDate())) {
                 initiateIngest = false;

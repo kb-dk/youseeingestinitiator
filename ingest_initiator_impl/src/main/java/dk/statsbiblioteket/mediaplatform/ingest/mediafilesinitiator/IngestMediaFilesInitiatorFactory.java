@@ -31,8 +31,8 @@ public class IngestMediaFilesInitiatorFactory {
      * @return
      */
     public static IngestMediaFilesInitiator create(Properties properties) {
-        setupLog4j(properties);
-        setupHibernate(properties);
+        setupLog4j(getPropertyValue(properties, LOG4J_CONFIG_FILE_PATH_KEY));
+        setupHibernate(getPropertyValue(properties, HIBERNATE_CONFIG_FILE_PATH_KEY));
         OutputStream outputStream = System.out;
         ChannelArchiveRequestServiceIF channelArchiveRequestService = new ChannelArchiveRequestService();
         YouSeeChannelMappingServiceIF youSeeChannelMappingService = new YouSeeChannelMappingService();
@@ -42,26 +42,25 @@ public class IngestMediaFilesInitiatorFactory {
     }
 
 
-    protected static void setupLog4j(Properties properties)
-            throws FactoryConfigurationError {
-        String log4jConfigFilePath = properties.getProperty(LOG4J_CONFIG_FILE_PATH_KEY);
-        if (log4jConfigFilePath == null) {
-            throw new RuntimeException("Missing property: " + LOG4J_CONFIG_FILE_PATH_KEY);
-        }
+    protected static void setupLog4j(String log4jConfigFilePath) throws FactoryConfigurationError {
         DOMConfigurator.configure(log4jConfigFilePath);
         log.debug("Log4j property file: " + log4jConfigFilePath);
     }
 
 
-    protected static void setupHibernate(Properties properties) {
-        String hibernateConfigFilePath = properties.getProperty(HIBERNATE_CONFIG_FILE_PATH_KEY);
-        if (hibernateConfigFilePath == null) {
-            throw new RuntimeException("Missing property: " + HIBERNATE_CONFIG_FILE_PATH_KEY);
-        }
+    protected static void setupHibernate(String hibernateConfigFilePath) {
         File hibernateConfigFile = new File(hibernateConfigFilePath);
         log.debug("Hibernate config file: " + hibernateConfigFile.getAbsolutePath());
         ChannelArchivingRequesterHibernateUtil.initialiseFactory(hibernateConfigFile); 
-        //HibernateUtil.initialiseFactory(hibernateConfigFile);
+    }
+
+
+    protected static String getPropertyValue(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        if (value == null) {
+            throw new RuntimeException("Missing property: " + key);
+        }
+        return value;
     }
 
 }
