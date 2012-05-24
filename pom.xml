@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dk.statsbiblioteket.mediaplatform.ingest</groupId>
   <artifactId>ingest_initiator_media_files</artifactId>
-  <version>0.4.3-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
   <name>Ingest Initiator Medie Files Parent</name>
   <description>Initiates ingest of medie files</description>
