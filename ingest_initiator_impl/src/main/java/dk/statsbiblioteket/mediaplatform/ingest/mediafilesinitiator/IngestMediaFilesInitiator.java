@@ -153,7 +153,13 @@ public class IngestMediaFilesInitiator {
                     String youseeChannelID = youSeeChannelMappingService.getUniqueMappingFromSbChannelId(sbChannelID, startDate.toDate()).getYouSeeChannelId();
                     String filenameYouSee = getYouSeeFilename(startDate, endDate, youseeChannelID);
                     String filenameSB = getSBFileID(sbChannelID, startDate, endDate);
-                    filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
+                    if (caRequest.isEnabled()) {
+                        filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
+                    } else {
+                        log.warn("Could not initiate download of '" + filenameYouSee + "' as '" + filenameSB +
+                                "' because request " + caRequest.toString() + " was disabled because '"
+                                + caRequest.getCause() + "'");
+                    }
                     hour++;
                 }
             }
