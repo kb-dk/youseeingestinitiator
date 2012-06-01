@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.ChannelArchivingRequesterValidator;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.ValidationFailure;
+import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.ValidatorIF;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -90,6 +93,10 @@ public class IngestMediaFilesInitiator {
             List<ChannelArchiveRequest> caRequests;
             caRequests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
             log.debug("Found requests size: " + caRequests.size());
+            ValidatorIF validator = new ChannelArchivingRequesterValidator();
+            List<ValidationFailure> failures = validator.getFailures();
+            log.info("Found " + failures.size() + " validation failures");
+            ChannelArchivingRequesterValidator.markAsEnabledOrDisabled(caRequests, failures);
             List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
             log.debug("Full file list size: " + fullFileList.size());
             List<MediaFileIngestOutputParameters> filteredFileList = filterOutFilesAlreadyIngested(dateOfIngest, new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
@@ -108,7 +115,11 @@ public class IngestMediaFilesInitiator {
         DateTime dayToCheck = fromDate;
         while (dayToCheck.isBefore(toDate) || dayToCheck.equals(toDate)) {
             for (ChannelArchiveRequest car : caRequests) {
-                filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
+                if (car.isEnabled()) {
+                    filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
+                } else {
+                    log.warn("Not scheculing files from request " + car.toString() + " because og validation failure " + car.getCause());
+                }
             }
             dayToCheck = dayToCheck.plusDays(1);
         }
@@ -135,7 +146,7 @@ public class IngestMediaFilesInitiator {
      * @return
      */
     protected Set<MediaFileIngestOutputParameters> inferFilesToIngest(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
-        Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
+       Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
         try {
             if (isChannelArchiveRequestActive(caRequest, dayToCheck)) {
                 String sbChannelID = caRequest.getsBChannelId();
@@ -153,13 +164,7 @@ public class IngestMediaFilesInitiator {
                     String youseeChannelID = youSeeChannelMappingService.getUniqueMappingFromSbChannelId(sbChannelID, startDate.toDate()).getYouSeeChannelId();
                     String filenameYouSee = getYouSeeFilename(startDate, endDate, youseeChannelID);
                     String filenameSB = getSBFileID(sbChannelID, startDate, endDate);
-                    if (caRequest.isEnabled()) {
-                        filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
-                    } else {
-                        log.warn("Could not initiate download of '" + filenameYouSee + "' as '" + filenameSB +
-                                "' because request " + caRequest.toString() + " was disabled because '"
-                                + caRequest.getCause() + "'");
-                    }
+                    filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
                     hour++;
                 }
             }
