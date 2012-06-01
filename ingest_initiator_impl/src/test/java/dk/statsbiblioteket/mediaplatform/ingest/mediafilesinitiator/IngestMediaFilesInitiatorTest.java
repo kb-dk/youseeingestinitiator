@@ -151,6 +151,27 @@ public class IngestMediaFilesInitiatorTest {
     }
 
     @Test
+    public void inferTotalFilesToDownloadOneChannelTwoWeeksTestDisabled() throws IOException {
+        List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>();
+        final ChannelArchiveRequest dr1Request = ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate());
+        dr1Request.setEnabled(false);
+        caRequests.add(dr1Request);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties,
+                null,
+                new YouSeeChannelMappingServiceTestStub(),
+                null,
+                System.out);
+
+        int youSeeKeepDuration = 14;
+        DateTime toDate = new DateTime(2010, 3, youSeeKeepDuration, 0, 0, 0, 0); // 2010-03-01 ~ monday, 2010-03-07 ~ sunday
+        DateTime fromDate = toDate.minusDays(youSeeKeepDuration);
+        List<MediaFileIngestOutputParameters> actual = initiator.inferFilesToIngest(caRequests, fromDate, toDate);
+        int expectedNumberOfFiles = 0;
+        assertEquals(expectedNumberOfFiles, actual.size());
+    }
+
+    @Test
     public void inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest() throws IOException {
         List<ChannelArchiveRequest> caRequests = new ArrayList<ChannelArchiveRequest>(); 
         caRequests.add(ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.MONDAY_TO_THURSDAY, new Time(8, 0, 0), new Time(20, 0, 0), new Date(0), new DateTime().plusMonths(3).toDate()));
