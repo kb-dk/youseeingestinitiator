@@ -68,6 +68,11 @@ public class IngestMediaFilesInitiator {
         this.workFlowStateNameDone = properties.getProperty(WORK_FLOW_STATE_NAME_DONE_KEY);
         this.workFlowStateNameStopped = properties.getProperty(WORK_FLOW_STATE_NAME_STOPPED_KEY);
         this.workFlowStateNameRestarted = properties.getProperty(WORK_FLOW_STATE_NAME_RESTARTED_KEY);
+        if (this.workFlowStateNameDone == null || 
+                this.workFlowStateNameStopped == null || 
+                this.workFlowStateNameRestarted == null) {
+            throw new RuntimeException("A property is missing: State name");
+        }
     }
 
     /**
