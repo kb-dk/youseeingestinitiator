@@ -25,7 +25,7 @@ public class WorkFlowStateMonitorWebServiceFacadeTest {
         defaultProperties.put("workflow.state.monitor.base.url", "http://canopus:34080/workflowstatemonitor");
         defaultProperties.put("expected.duration.of.file.ingest.process", "12");
         defaultProperties.put("final.work.flow.component.name", "Yousee complete workflow final step");
-        defaultProperties.put("final.work.flow.state.name", "Completed");
+        defaultProperties.put("work.flow.state.name.done", "Done");
         System.getProperties().put("log4j.defaultInitOverride", "true");
         DOMConfigurator.configure(defaultProperties.getProperty("log4j.config.file.path"));
         log = Logger.getLogger(WorkFlowStateMonitorWebServiceFacadeTest.class);

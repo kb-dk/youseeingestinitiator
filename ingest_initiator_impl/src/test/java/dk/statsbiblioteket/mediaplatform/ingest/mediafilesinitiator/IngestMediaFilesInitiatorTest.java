@@ -329,4 +329,84 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(false, result);
     }    
+    
+    @Test
+    public void testShouldInititateIngest_stopped() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Stopped";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(false, result);
+    }    
+    
+    @Test
+    public void testShouldInititateIngest_restarted() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Restarted";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(true, result);
+    }    
+    
+    @Test
+    public void testShouldInititateIngest_recentlyFailed() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Failed";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(false, result);
+    }    
+    
+    @Test
+    public void testShouldInititateIngest_notRecentlyFailed() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
+        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-26-23.00.00").toDate();
+        String component = "Yousee complete workflow final step";
+        String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        String stateName = "Failed";
+        WorkFlowStateMonitorFacadeStub workFlowStateMonitorFacade = new WorkFlowStateMonitorFacadeStub(component, stateUpdatedDate, sbFilenameId, stateName);
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties, 
+                null, 
+                new YouSeeChannelMappingServiceTestStub(),
+                workFlowStateMonitorFacade,
+                System.out);
+        DateTime dateOfIngest = dateTimeFormatter.parseDateTime("2012-01-28-03.00.00");
+        String fileNameSB = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
+        boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
+        assertEquals(true, result);
+    }    
 }
