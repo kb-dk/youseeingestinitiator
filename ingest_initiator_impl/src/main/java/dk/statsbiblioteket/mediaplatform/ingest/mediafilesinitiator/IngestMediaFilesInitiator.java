@@ -93,10 +93,6 @@ public class IngestMediaFilesInitiator {
             List<ChannelArchiveRequest> caRequests;
             caRequests = channelArchiveRequestService.getValidRequests(fromDate.toDate(), toDate.toDate());
             log.debug("Found requests size: " + caRequests.size());
-            ValidatorIF validator = new ChannelArchivingRequesterValidator();
-            List<ValidationFailure> failures = validator.getFailures();
-            log.info("Found " + failures.size() + " validation failures");
-            ChannelArchivingRequesterValidator.markAsEnabledOrDisabled(caRequests, failures);
             List<MediaFileIngestOutputParameters> fullFileList = inferFilesToIngest(caRequests, fromDate, toDate);
             log.debug("Full file list size: " + fullFileList.size());
             List<MediaFileIngestOutputParameters> filteredFileList = filterOutFilesAlreadyIngested(dateOfIngest, new ArrayList<MediaFileIngestOutputParameters>(fullFileList));
@@ -110,7 +106,7 @@ public class IngestMediaFilesInitiator {
     }
 
     protected List<MediaFileIngestOutputParameters> inferFilesToIngest(List<ChannelArchiveRequest> caRequests, DateTime fromDate, DateTime toDate) {
-        log.debug("Infering files to ingest. Request: " + caRequests + ", fromDate: " + fromDate + ", toDate: " + toDate);
+        log.debug("Inferring files to ingest. Request: " + caRequests + ", fromDate: " + fromDate + ", toDate: " + toDate);
         Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
         DateTime dayToCheck = fromDate;
         while (dayToCheck.isBefore(toDate) || dayToCheck.equals(toDate)) {
@@ -118,7 +114,7 @@ public class IngestMediaFilesInitiator {
                 if (car.isEnabled()) {
                     filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
                 } else {
-                    log.warn("Not scheculing files from request " + car.toString() + " because og validation failure " + car.getCause());
+                    log.error("Not scheduling files from request " + car.toString() + " because of validation failure " + car.getCause());
                 }
             }
             dayToCheck = dayToCheck.plusDays(1);
