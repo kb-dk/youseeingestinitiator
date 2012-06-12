@@ -41,9 +41,9 @@ public class IngestMediaFilesInitiator {
 
     private static final String YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY = "yousee.recordings.days.to.keep";
     private static final String EXPECTED_DURATION_OF_FILE_INGEST_PROCESS_KEY = "expected.duration.of.file.ingest.process";
-    private static final String FINAL_WORK_FLOW_COMPONENT_NAME_KEY = "final.work.flow.component.name";
-    private static final String FINAL_WORK_FLOW_STATE_NAME_KEY = "final.work.flow.state.name";
-    
+    private static final String WORK_FLOW_STATE_NAME_DONE_KEY = "work.flow.state.name.done";
+    private static final String WORK_FLOW_STATE_NAME_STOPPED_KEY = "work.flow.state.name.stoppped";
+    private static final String WORK_FLOW_STATE_NAME_RESTARTED_KEY = "work.flow.state.name.restarted";
     private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
     private static final DateTimeFormatter sbFilenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -54,8 +54,9 @@ public class IngestMediaFilesInitiator {
     private final OutputStream outputStream;
     private final int daysYouSeeKeepsRecordings;
     private final int expectedDurationOfFileIngestProcess;
-    private final String finalWorkFlowComponentName;
-    private final String finalWorkFlowStateName;
+    private final String workFlowStateNameDone;
+    private final String workFlowStateNameStopped;
+    private final String workFlowStateNameRestarted;
 
     public IngestMediaFilesInitiator(Properties properties, ChannelArchiveRequestServiceIF channelArchiveRequestDAO, YouSeeChannelMappingServiceIF youSeeChannelMappingService, WorkFlowStateMonitorFacade workFlowStateMonitorFacade, OutputStream outputStream) {
         this.channelArchiveRequestService = channelArchiveRequestDAO;
@@ -64,8 +65,14 @@ public class IngestMediaFilesInitiator {
         this.outputStream = outputStream;
         this.daysYouSeeKeepsRecordings = Integer.parseInt(properties.getProperty(YOUSEE_RECORDINGS_DAYS_TO_KEEP_KEY));
         this.expectedDurationOfFileIngestProcess = Integer.parseInt(properties.getProperty(EXPECTED_DURATION_OF_FILE_INGEST_PROCESS_KEY));
-        this.finalWorkFlowComponentName = properties.getProperty(FINAL_WORK_FLOW_COMPONENT_NAME_KEY);
-        this.finalWorkFlowStateName = properties.getProperty(FINAL_WORK_FLOW_STATE_NAME_KEY);
+        this.workFlowStateNameDone = properties.getProperty(WORK_FLOW_STATE_NAME_DONE_KEY);
+        this.workFlowStateNameStopped = properties.getProperty(WORK_FLOW_STATE_NAME_STOPPED_KEY);
+        this.workFlowStateNameRestarted = properties.getProperty(WORK_FLOW_STATE_NAME_RESTARTED_KEY);
+        if (this.workFlowStateNameDone == null || 
+                this.workFlowStateNameStopped == null || 
+                this.workFlowStateNameRestarted == null) {
+            throw new RuntimeException("A property is missing: State name");
+        }
     }
 
     /**
@@ -142,7 +149,7 @@ public class IngestMediaFilesInitiator {
      * @return
      */
     protected Set<MediaFileIngestOutputParameters> inferFilesToIngest(ChannelArchiveRequest caRequest, DateTime dayToCheck) {
-       Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
+        Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
         try {
             if (isChannelArchiveRequestActive(caRequest, dayToCheck)) {
                 String sbChannelID = caRequest.getsBChannelId();
@@ -184,8 +191,8 @@ public class IngestMediaFilesInitiator {
             String youseeChannelID) {
         String filenameYouSee = 
                 youseeChannelID + "_"
-                + youseeFilenameDateFormatter.print(startDate) + "_"
-                + youseeFilenameDateFormatter.print(endDate) + ".mux";
+                        + youseeFilenameDateFormatter.print(startDate) + "_"
+                        + youseeFilenameDateFormatter.print(endDate) + ".mux";
         return filenameYouSee;
     }
 
@@ -323,12 +330,9 @@ public class IngestMediaFilesInitiator {
 
     /**
      * Evalutates if a file should be ingested or not.
-     * 
-     * Ingest NOT if:
-     * <ul>
-     *   <li>If file has succesfully been ingested.</li>  
-     *   <li>If ingest has been started within a property defined period of time, eg. 12 hours.</li> 
-     * </ul>
+     *
+     * See https://sbprojects.statsbiblioteket.dk/display/INFRA/YouSee+Ingest+Initiator
+     * for mapping between states and action.
      * 
      * @param dateOfIngest date and time of the current ingest
      * @param fileNameSB
@@ -338,54 +342,60 @@ public class IngestMediaFilesInitiator {
         State state = workFlowStateMonitorFacade.getLastWorkFlowStateForEntity(fileNameSB);
         log.info(state);
         boolean initiateIngest = true;
-        if (state != null) {
-            if (state.getStateName().equals(finalWorkFlowStateName)) {
-                initiateIngest = false;
-            } else if (state.getDate().after(dateOfIngest.minusHours(expectedDurationOfFileIngestProcess).toDate())) {
-                initiateIngest = false;
-            }
-        } 
+        if (state == null) { // Unknown
+            initiateIngest = true;
+        } else if (state.getStateName().equals(workFlowStateNameDone)) {
+            initiateIngest = false; 
+        } else if (state.getStateName().equals(workFlowStateNameRestarted)) {
+            initiateIngest = true;
+        } else if (state.getStateName().equals(workFlowStateNameStopped)) {
+            initiateIngest = false;
+        } else if (state.getDate().after(dateOfIngest.minusHours(expectedDurationOfFileIngestProcess).toDate())) {
+            initiateIngest = false;
+        } else { // Any other (non-final) state older than expectedDurationOfFileIngestProcess hours
+            initiateIngest = true;
+        }
         return initiateIngest;
     }
 
-    /**
-     * Converts ingest parameters to JSON format and outputs to the given PrintWriter.
-     *
-     * @param outputList of files that must be ingested
-     * @param outputStream Where output is directed
-     */
-    protected void outputResult(List<MediaFileIngestOutputParameters> outputList, OutputStream outputStream) {
-        boolean firstEntry = true;
-        String output = " {\n"
-                + "     \"downloads\":[";
-        for (MediaFileIngestOutputParameters mediaFileIngestParameters : outputList) {
-            String params = "\n"
-                    + "         {\n"
-                    + "            \"fileID\" : \"" +          mediaFileIngestParameters.getFileNameSB() + "\",\n"
-                    + "            \"youSeeFilename\" : \"" +  mediaFileIngestParameters.getFileNameYouSee() + "\",\n"
-                    + "            \"startTime\" : \"" +       youseeFilenameDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
-                    + "            \"endTime\" : \"" +         youseeFilenameDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
-                    + "            \"youseeChannelID\" : \"" + mediaFileIngestParameters.getChannelIDYouSee() + "\",\n"
-                    + "            \"sbChannelID\" : \"" +     mediaFileIngestParameters.getChannelIDSB() + "\"\n"
-                    + "         }";
-            if (firstEntry) {
-                output += params;
-                firstEntry = false;
-            } else {
-                output += "," + params;
-            }
-        }
-        output += "\n"
-                + "     ]\n"
-                + " }\n";
-        try {
-            log.debug("Writing output: " + output);
-            outputStream.write(output.getBytes());
-            log.debug("Closing output.");
-            outputStream.close();
-            log.debug("Closed output.");
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to output to: " + outputStream, e);
+/**
+ * Converts ingest parameters to JSON format and outputs to the given PrintWriter.
+ *
+ * @param outputList of files that must be ingested
+ * @param outputStream Where output is directed
+ */
+protected void outputResult(List<MediaFileIngestOutputParameters> outputList, OutputStream outputStream) {
+    boolean firstEntry = true;
+    String output = " {\n"
+            + "     \"downloads\":[";
+    for (MediaFileIngestOutputParameters mediaFileIngestParameters : outputList) {
+        String params = "\n"
+                + "         {\n"
+                + "            \"fileID\" : \"" +          mediaFileIngestParameters.getFileNameSB() + "\",\n"
+                + "            \"youSeeFilename\" : \"" +  mediaFileIngestParameters.getFileNameYouSee() + "\",\n"
+                + "            \"startTime\" : \"" +       youseeFilenameDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
+                + "            \"endTime\" : \"" +         youseeFilenameDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
+                + "            \"youseeChannelID\" : \"" + mediaFileIngestParameters.getChannelIDYouSee() + "\",\n"
+                + "            \"sbChannelID\" : \"" +     mediaFileIngestParameters.getChannelIDSB() + "\"\n"
+                + "         }";
+        if (firstEntry) {
+            output += params;
+            firstEntry = false;
+        } else {
+            output += "," + params;
         }
     }
+    output += "\n"
+            + "     ]\n"
+            + " }\n";
+    try {
+        log.debug("Writing output: " + output);
+        outputStream.write(output.getBytes());
+        log.debug("Closing output.");
+        outputStream.close();
+        log.debug("Closed output.");
+    } catch (IOException e) {
+        throw new RuntimeException("Unable to output to: " + outputStream, e);
+    }
+}
 }
