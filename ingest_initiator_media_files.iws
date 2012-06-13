@@ -15,8 +15,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="831c6d39-24f3-48d6-9680-fc3ca18ef92d" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/release.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/pom.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/src/main/assembly/assembly.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/src/test/scripts/ingestInitiator_test_local_heb.sh" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/target/ingest_initiator_bundle-1.0.1-SNAPSHOT-bundle.zip" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/target/yousee-ingest-initiator-bundle-1.1.1-SNAPSHOT-bundle.zip" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-bundle/yousee-ingest-initiator-bundle.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-impl/target/yousee-ingest-initiator-impl-1.1.1-SNAPSHOT.jar" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/yousee-ingest-initiator.iml" afterPath="$PROJECT_DIR$/yousee-ingest-initiator-parent.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ingest_initiator_media_files.iws" afterPath="$PROJECT_DIR$/ingest_initiator_media_files.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml" afterPath="$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml" />
     </list>
     <ignored path="ingest_initiator_media_files.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -89,17 +99,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="IngestMediaFilesInitiator.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-impl/src/main/java/dk/statsbiblioteket/mediaplatform/ingest/mediafilesinitiator/IngestMediaFilesInitiator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="115" column="25" selection-start="6689" selection-end="6689" vertical-scroll-proportion="0.0">
-              <folding>
-                <marker date="1339490943000" expanded="true" signature="17529:17675" placeholder="/**...*/" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="IngestMediaFilesInitiatorTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-impl/src/test/java/dk/statsbiblioteket/mediaplatform/ingest/mediafilesinitiator/IngestMediaFilesInitiatorTest.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -121,7 +120,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="11" selection-start="1422" selection-end="1422" vertical-scroll-proportion="0.0">
+            <state line="3" column="44" selection-start="341" selection-end="341" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -145,19 +144,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="0" selection-start="298" selection-end="298" vertical-scroll-proportion="0.0">
+            <state line="8" column="46" selection-start="528" selection-end="528" vertical-scroll-proportion="0.12448133">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-bundle/pom.xml">
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="57" selection-start="967" selection-end="967" vertical-scroll-proportion="0.39918116">
+            <state line="7" column="44" selection-start="435" selection-end="435" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="assembly.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator/src/main/assembly/assembly.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -199,9 +207,10 @@
         <option value="$PROJECT_DIR$/ingest_initiator_impl/pom.xml" />
         <option value="$PROJECT_DIR$/ingest_initiator_impl/src/test/java/dk/statsbiblioteket/mediaplatform/ingest/mediafilesinitiator/IngestMediaFilesInitiatorTest.java" />
         <option value="$PROJECT_DIR$/ingest_initiator_impl/src/main/java/dk/statsbiblioteket/mediaplatform/ingest/mediafilesinitiator/IngestMediaFilesInitiator.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml" />
         <option value="$PROJECT_DIR$/yousee-ingest-initiator-bundle/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/yousee-ingest-initiator/pom.xml" />
+        <option value="$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml" />
       </list>
     </option>
   </component>
@@ -302,7 +311,51 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="yousee-ingest-initiator-bundle" />
+              <option name="myItemId" value="yousee-ingest-initiator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ingest_initiator_media_files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ingest_initiator_media_files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="yousee-ingest-initiator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ingest_initiator_media_files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ingest_initiator_media_files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="yousee-ingest-initiator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assembly" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -563,7 +616,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="115" column="25" selection-start="6689" selection-end="6689" vertical-scroll-proportion="0.0">
           <folding>
-            <marker date="1339490943000" expanded="true" signature="17529:17675" placeholder="/**...*/" />
+            <marker date="1339490943000" expanded="true" signature="-1:-1" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -602,21 +655,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="11" selection-start="1422" selection-end="1422" vertical-scroll-proportion="0.0">
+        <state line="3" column="44" selection-start="341" selection-end="341" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="44" selection-start="435" selection-end="435" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator/src/main/assembly/assembly.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-impl/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="0" selection-start="298" selection-end="298" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/yousee-ingest-initiator-bundle/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="57" selection-start="967" selection-end="967" vertical-scroll-proportion="0.39918116">
+        <state line="8" column="46" selection-start="528" selection-end="528" vertical-scroll-proportion="0.12448133">
           <folding />
         </state>
       </provider>

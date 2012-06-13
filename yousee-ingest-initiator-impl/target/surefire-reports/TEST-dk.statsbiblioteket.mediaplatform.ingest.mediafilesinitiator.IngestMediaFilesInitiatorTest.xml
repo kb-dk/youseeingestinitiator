@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.67" errors="0" skipped="0" tests="17" name="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest">
+<testsuite failures="0" time="0.766" errors="0" skipped="0" tests="17" name="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/home/csr/software/jdk1.6.0_25/jre/lib/amd64"/>
@@ -57,21 +57,21 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.143" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="outputFormatTest"/>
-  <testcase time="0.046" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferFilesToIngestFilenameTest"/>
-  <testcase time="0.019" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOneWeekTest"/>
-  <testcase time="0.016" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTest"/>
-  <testcase time="0.02" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTestDisabled"/>
-  <testcase time="0.041" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest"/>
-  <testcase time="0.087" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelDailyOneWeekTest"/>
-  <testcase time="0.229" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOverlappingRequestOneWeekTest"/>
+  <testcase time="0.159" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="outputFormatTest"/>
+  <testcase time="0.08" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferFilesToIngestFilenameTest"/>
+  <testcase time="0.021" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOneWeekTest"/>
+  <testcase time="0.021" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTest"/>
+  <testcase time="0.021" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTestDisabled"/>
+  <testcase time="0.029" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest"/>
+  <testcase time="0.062" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelDailyOneWeekTest"/>
+  <testcase time="0.271" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOverlappingRequestOneWeekTest"/>
   <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testGetSBFileID_checkSBFilename"/>
-  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notIngested"/>
-  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_failedIngest"/>
-  <testcase time="0.001" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_completedIngest"/>
-  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyStartedIngest"/>
-  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_stopped"/>
-  <testcase time="0.015" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_restarted"/>
-  <testcase time="0.029" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyFailed"/>
-  <testcase time="0.017" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notRecentlyFailed"/>
+  <testcase time="0.001" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notIngested"/>
+  <testcase time="0.027" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_failedIngest"/>
+  <testcase time="0.009" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_completedIngest"/>
+  <testcase time="0.007" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyStartedIngest"/>
+  <testcase time="0.008" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_stopped"/>
+  <testcase time="0.012" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_restarted"/>
+  <testcase time="0.009" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyFailed"/>
+  <testcase time="0.007" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notRecentlyFailed"/>
 </testsuite>
