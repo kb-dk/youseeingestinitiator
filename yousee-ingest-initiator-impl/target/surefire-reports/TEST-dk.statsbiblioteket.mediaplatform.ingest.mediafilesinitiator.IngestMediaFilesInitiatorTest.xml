@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.67" errors="0" skipped="0" tests="17" name="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/home/csr/software/jdk1.6.0_25/jre/lib/amd64"/>
+    <property name="java.vm.version" value="20.0-b11"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/csr/projects/ingest_initiator_media_files"/>
+    <property name="java.runtime.version" value="1.6.0_25-b06"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/home/csr/software/jdk1.6.0_25/jre/lib/endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="classworlds.conf" value="/usr/share/maven/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/home/csr/software/jdk1.6.0_25/jre/lib/amd64/server:/home/csr/software/jdk1.6.0_25/jre/lib/amd64:/home/csr/software/jdk1.6.0_25/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="3.2.0-24-generic"/>
+    <property name="user.home" value="/home/csr"/>
+    <property name="user.timezone" value="Europe/Copenhagen"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="csr"/>
+    <property name="java.class.path" value="/usr/share/maven/boot/plexus-classworlds-2.x.jar"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/home/csr/software/jdk1.6.0_25/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean package"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_25"/>
+    <property name="java.ext.dirs" value="/home/csr/software/jdk1.6.0_25/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="securerandom.source" value="file:/dev/./urandom"/>
+    <property name="sun.boot.class.path" value="/home/csr/software/jdk1.6.0_25/jre/lib/resources.jar:/home/csr/software/jdk1.6.0_25/jre/lib/rt.jar:/home/csr/software/jdk1.6.0_25/jre/lib/sunrsasign.jar:/home/csr/software/jdk1.6.0_25/jre/lib/jsse.jar:/home/csr/software/jdk1.6.0_25/jre/lib/jce.jar:/home/csr/software/jdk1.6.0_25/jre/lib/charsets.jar:/home/csr/software/jdk1.6.0_25/jre/lib/modules/jdk.boot.jar:/home/csr/software/jdk1.6.0_25/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="maven.home" value="/usr/share/maven"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.143" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="outputFormatTest"/>
+  <testcase time="0.046" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferFilesToIngestFilenameTest"/>
+  <testcase time="0.019" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOneWeekTest"/>
+  <testcase time="0.016" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTest"/>
+  <testcase time="0.02" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelTwoWeeksTestDisabled"/>
+  <testcase time="0.041" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelWeekDaysOneWeekTest"/>
+  <testcase time="0.087" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelDailyOneWeekTest"/>
+  <testcase time="0.229" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="inferTotalFilesToDownloadOneChannelOverlappingRequestOneWeekTest"/>
+  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testGetSBFileID_checkSBFilename"/>
+  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notIngested"/>
+  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_failedIngest"/>
+  <testcase time="0.001" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_completedIngest"/>
+  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyStartedIngest"/>
+  <testcase time="0" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_stopped"/>
+  <testcase time="0.015" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_restarted"/>
+  <testcase time="0.029" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_recentlyFailed"/>
+  <testcase time="0.017" classname="dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiatorTest" name="testShouldInititateIngest_notRecentlyFailed"/>
+</testsuite>

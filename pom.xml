@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>dk.statsbiblioteket.mediaplatform.ingest</groupId>
-  <artifactId>ingest_initiator_media_files</artifactId>
+  <groupId>dk.statsbiblioteket.medieplatform</groupId>
+  <artifactId>yousee-ingest-initiator</artifactId>
   <version>1.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Ingest Initiator Medie Files Parent</name>
+  <name>Yousee Ingest Initiator</name>
   <description>Initiates ingest of medie files</description>
   <modules>
-    <module>ingest_initiator_impl</module>
-    <module>ingest_initiator_bundle</module>
+    <module>yousee-ingest-initiator-bundle</module>
+    <module>yousee-ingest-initiator-impl</module>
   </modules>
 
   <scm>
-    <url>https://github.com/statsbiblioteket/ingest_initiator_media_files</url>
-    <connection>scm:git:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</connection>
-    <developerConnection>scm:git:git@github.com:statsbiblioteket/ingest_initiator_media_files.git</developerConnection>
+    <url>https://github.com/statsbiblioteket/youseeingestinitiator</url>
+    <connection>scm:git:git@github.com:statsbiblioteket/youseeingestinitiator.git</connection>
+    <developerConnection>scm:git:git@github.com:statsbiblioteket/youseeingestinitiator.git</developerConnection>
   </scm>
 
   <parent>
