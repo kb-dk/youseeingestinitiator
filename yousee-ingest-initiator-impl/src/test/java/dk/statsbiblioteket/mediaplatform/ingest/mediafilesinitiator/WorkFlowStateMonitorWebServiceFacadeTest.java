@@ -22,7 +22,7 @@ public class WorkFlowStateMonitorWebServiceFacadeTest {
         defaultProperties.put("hibernate.config.file.path", "/Users/henningbottger/projects/yousee/dev/ingest_component/ingest_initiator_media_file/src/test/config/ingest_initiator_media_files_CLI.hibernate.cfg.xml");
         defaultProperties.put("log4j.config.file.path", "src/test/config/ingest_initiator_media_files_unittest.log4j.xml");
         defaultProperties.put("yousee.recordings.days.to.keep", "28");
-        defaultProperties.put("workflow.state.monitor.base.url", "http://canopus:34080/workflowstatemonitor");
+        defaultProperties.put("workflow.state.monitor.base.url", "http://canopus:9511/workflowstatemonitor");
         defaultProperties.put("expected.duration.of.file.ingest.process", "12");
         defaultProperties.put("final.work.flow.component.name", "Yousee complete workflow final step");
         defaultProperties.put("work.flow.state.name.done", "Done");
@@ -59,5 +59,12 @@ public class WorkFlowStateMonitorWebServiceFacadeTest {
         WorkFlowStateMonitorWebServiceFacade workFlowStateMonitorWebServiceFacade = new WorkFlowStateMonitorWebServiceFacade(defaultProperties);
         State state = workFlowStateMonitorWebServiceFacade.getLastWorkFlowStateForEntity("impossible_filename.mux");
         assertNull(state);
+    }
+
+    /** Not a unittest. Requires running webservice. */
+    //@Test
+    public void testAddState() {
+        WorkFlowStateMonitorWebServiceFacade workFlowStateMonitorWebServiceFacade = new WorkFlowStateMonitorWebServiceFacade(defaultProperties);
+        workFlowStateMonitorWebServiceFacade.addState("FAIL", "FAILFAILFAIL");
     }
 }

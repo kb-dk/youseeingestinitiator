@@ -13,6 +13,8 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
+import javax.ws.rs.core.MediaType;
+
 public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonitorFacade {
 
     private static final String WORKFLOW_STATE_MONITOR_BASE_URL_KEY = "workflow.state.monitor.base.url";
@@ -56,7 +58,7 @@ public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonito
         Client client = Client.create(config);
         WebResource webResource = client.resource(workFlowStateMonitorBaseUrl).path("states").path(
                 "Yousee Ingest Initiator");
-        webResource.post(state);
+        webResource.type(MediaType.TEXT_XML_TYPE).post(state);
         log.debug("Added state: " + state);
     }
 
