@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 public class WorkFlowStateMonitorWebServiceFacadeTest {
 

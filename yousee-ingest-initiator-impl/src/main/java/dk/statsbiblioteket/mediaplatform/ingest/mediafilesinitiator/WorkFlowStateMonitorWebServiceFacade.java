@@ -11,7 +11,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonitorFacade {
 
@@ -43,6 +43,21 @@ public class WorkFlowStateMonitorWebServiceFacade implements WorkFlowStateMonito
             state = states.get(0);
         }
         return state;
+    }
+
+    @Override
+    public void addState(String stateName, String message) {
+        State state = new State();
+        state.setComponent("Yousee Ingest Initiator");
+        state.setStateName(stateName);
+        state.setMessage(message);
+
+        ClientConfig config = new DefaultClientConfig();
+        Client client = Client.create(config);
+        WebResource webResource = client.resource(workFlowStateMonitorBaseUrl).path("states").path(
+                "Yousee Ingest Initiator");
+        webResource.post(state);
+        log.debug("Added state: " + state);
     }
 
 }

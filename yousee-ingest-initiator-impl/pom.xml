@@ -17,10 +17,9 @@
       <version>1.1.2</version>
     </dependency>
     <dependency>
-      <groupId>dk.statsbiblioteket.mediaplatform</groupId>
-      <!-- artifactId>workflowstatemonitor</artifactId-->
-      <artifactId>model</artifactId>
-      <version>0.3</version>
+      <groupId>dk.statsbiblioteket.medieplatform</groupId>
+      <artifactId>workflow-state-monitor-model</artifactId>
+      <version>0.6</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>

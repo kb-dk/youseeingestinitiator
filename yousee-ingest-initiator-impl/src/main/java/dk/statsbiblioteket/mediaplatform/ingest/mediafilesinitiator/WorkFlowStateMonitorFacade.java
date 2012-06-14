@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 /** Hides interface to work flow state monitor */
 public interface WorkFlowStateMonitorFacade {
@@ -11,4 +11,9 @@ public interface WorkFlowStateMonitorFacade {
      */
     public abstract State getLastWorkFlowStateForEntity(String sbFileId);
 
+    /** Add a state for this component
+     * @param stateName Name of state to add.
+     * @param message A human readable message for the state.
+     */
+    public abstract void addState(String stateName, String message);
 }

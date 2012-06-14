@@ -2,12 +2,9 @@ package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock;
 
 import java.util.Date;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.WorkFlowStateMonitorFacade;
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.Entity;
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.Entity;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 public class WorkFlowStateMonitorFacadeStub implements
         WorkFlowStateMonitorFacade {
@@ -25,6 +22,11 @@ public class WorkFlowStateMonitorFacadeStub implements
     @Override
     public State getLastWorkFlowStateForEntity(String sbFileId) {
         return state;
+    }
+
+    @Override
+    public void addState(String stateName, String message) {
+        //Does nothing in stub.
     }
 
     protected State generateState(String component, Date date, String sbFilenameId, String stateName) {

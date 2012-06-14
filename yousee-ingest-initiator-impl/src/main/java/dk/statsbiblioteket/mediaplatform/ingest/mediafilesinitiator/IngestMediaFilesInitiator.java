@@ -24,7 +24,7 @@ import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ServiceException;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.YouSeeChannelMappingServiceIF;
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 /**
  * Formålet med denne klasse er at starte et workflow til ingest af nye mediefiler i Medieplatformen.
@@ -115,6 +115,7 @@ public class IngestMediaFilesInitiator {
     protected List<MediaFileIngestOutputParameters> inferFilesToIngest(List<ChannelArchiveRequest> caRequests, DateTime fromDate, DateTime toDate) {
         log.debug("Inferring files to ingest. Request: " + caRequests + ", fromDate: " + fromDate + ", toDate: " + toDate);
         Set<MediaFileIngestOutputParameters> filesToIngest = new HashSet<MediaFileIngestOutputParameters>();
+        List<ChannelArchiveRequest> failures = new ArrayList<ChannelArchiveRequest>();
         DateTime dayToCheck = fromDate;
         while (dayToCheck.isBefore(toDate) || dayToCheck.equals(toDate)) {
             for (ChannelArchiveRequest car : caRequests) {
@@ -122,12 +123,25 @@ public class IngestMediaFilesInitiator {
                     filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
                 } else {
                     log.error("Not scheduling files from request " + car.toString() + " because of validation failure " + car.getCause());
+                    failures.add(car);
                 }
             }
             dayToCheck = dayToCheck.plusDays(1);
         }
         List<MediaFileIngestOutputParameters> fileList = new ArrayList<MediaFileIngestOutputParameters>(filesToIngest);
         Collections.sort(fileList);
+        if (failures.isEmpty()) {
+            workFlowStateMonitorFacade.addState("Started", "Scheduled " + fileList.size() + " files");
+        } else {
+            StringBuilder errorString = new StringBuilder();
+            errorString.append("Error scheduling files: ");
+            for (ChannelArchiveRequest car : failures) {
+                errorString.append("Not scheduling files from request ").append(car.toString())
+                        .append(" because of validation failure ").append(car.getCause());
+            }
+            workFlowStateMonitorFacade.addState("Failed", errorString.toString() + "\nScheduled " + fileList.size()
+                    + " files");
+        }
         return fileList;
     }
 

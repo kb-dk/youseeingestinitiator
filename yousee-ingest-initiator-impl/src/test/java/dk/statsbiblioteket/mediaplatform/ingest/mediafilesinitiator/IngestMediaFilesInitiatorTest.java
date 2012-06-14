@@ -29,7 +29,7 @@ import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.WorkFlo
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceTestStub;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
-import dk.statsbiblioteket.mediaplatform.workflowstatemonitor.State;
+import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 public class IngestMediaFilesInitiatorTest {
 
@@ -120,7 +120,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties, 
                 null, 
                 new YouSeeChannelMappingServiceTestStub(), 
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -139,7 +139,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties, 
                 null, 
                 new YouSeeChannelMappingServiceTestStub(), 
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 14;
@@ -160,7 +160,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties,
                 null,
                 new YouSeeChannelMappingServiceTestStub(),
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 14;
@@ -179,7 +179,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties, 
                 null, 
                 new YouSeeChannelMappingServiceTestStub(), 
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -198,7 +198,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties, 
                 null, 
                 new YouSeeChannelMappingServiceTestStub(), 
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 7;
@@ -218,7 +218,7 @@ public class IngestMediaFilesInitiatorTest {
                 defaultProperties, 
                 null, 
                 new YouSeeChannelMappingServiceTestStub(), 
-                null,
+                new WorkFlowStateMonitorFacadeStub(),
                 System.out);
 
         int youSeeKeepDuration = 7;
