@@ -119,10 +119,17 @@ public class IngestMediaFilesInitiator {
         DateTime dayToCheck = fromDate;
         while (dayToCheck.isBefore(toDate) || dayToCheck.equals(toDate)) {
             for (ChannelArchiveRequest car : caRequests) {
-                if (car.isEnabled()) {
-                    filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
-                } else {
-                    log.error("Not scheduling files from request " + car.toString() + " because of validation failure " + car.getCause());
+                try {
+                    if (car.isEnabled()) {
+                        filesToIngest.addAll(inferFilesToIngest(car, dayToCheck));
+                    } else {
+                        log.error("Not scheduling files from request " + car.toString() + " because of validation failure " + car.getCause());
+                        failures.add(car);
+                    }
+                } catch (Exception e) {
+                    log.error("Not scheduling files from request " + car.toString() + " because of exception in scheduling", e);
+                    car.setEnabled(false);
+                    car.setCause("Failure in Ingest Initiator during scheduling (see log for details): " + e.toString());
                     failures.add(car);
                 }
             }
