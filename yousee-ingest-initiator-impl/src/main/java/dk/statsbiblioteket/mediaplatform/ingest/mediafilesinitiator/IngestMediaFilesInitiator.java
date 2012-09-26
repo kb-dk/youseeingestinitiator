@@ -107,7 +107,8 @@ public class IngestMediaFilesInitiator {
             outputResult(filteredFileList, outputStream);
             log.debug("Done initiating ingest based on date: " + dateOfIngest);
         } catch (Exception e) {
-            log.error("An error occured: " + e.getMessage(), e);
+            log.error("An error occurred: " + e.toString(), e);
+            workFlowStateMonitorFacade.addState("Failed", "An error occurred initiating ingest (see logs for details). " + e.toString());
             throw new RuntimeException("An error occured initiating ingest.", e);
         }
     }
@@ -366,7 +367,7 @@ public class IngestMediaFilesInitiator {
         if (state == null) { // Unknown
             initiateIngest = true;
         } else if (state.getStateName().equals(workFlowStateNameDone)) {
-            initiateIngest = false; 
+            initiateIngest = false;
         } else if (state.getStateName().equals(workFlowStateNameRestarted)) {
             initiateIngest = true;
         } else if (state.getStateName().equals(workFlowStateNameStopped)) {
