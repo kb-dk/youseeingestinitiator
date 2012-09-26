@@ -1,5 +1,7 @@
-.idea/
 derby.log
 target
 .idea
-
+*.iws
+*.ipr
+*.iml
+atlassian-ide-plugin.xml
