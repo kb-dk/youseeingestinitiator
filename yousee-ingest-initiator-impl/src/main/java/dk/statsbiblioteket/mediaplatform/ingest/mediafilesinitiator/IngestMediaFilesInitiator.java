@@ -177,20 +177,20 @@ public class IngestMediaFilesInitiator {
                 String sbChannelID = caRequest.getsBChannelId();
                 LocalTime localTimeFrom = new LocalTime(caRequest.getFromTime().getTime());
                 LocalTime localTimeTo = new LocalTime(caRequest.getToTime().getTime());
-                int fromHour = localTimeFrom.getHourOfDay();
-                int toHour = localTimeTo.getHourOfDay();
-                if (localTimeTo.getMinuteOfHour() != 0) {
-                    toHour++;
+                DateTime startDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(),
+                                                  localTimeFrom.getHourOfDay(), 0);
+                DateTime finalDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(),
+                                                                  localTimeTo.getHourOfDay(), localTimeTo.getMinuteOfHour());
+                if (!startDate.isBefore(finalDate)) {
+                    finalDate = finalDate.plusDays(1);
                 }
-                int hour = fromHour;
-                while (hour < toHour) {
-                    DateTime startDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(), hour, 0);
+                while (startDate.isBefore(finalDate)) {
                     DateTime endDate = startDate.plusHours(1);
                     String youseeChannelID = youSeeChannelMappingService.getUniqueMappingFromSbChannelId(sbChannelID, startDate.toDate()).getYouSeeChannelId();
                     String filenameYouSee = getYouSeeFilename(startDate, endDate, youseeChannelID);
                     String filenameSB = getSBFileID(sbChannelID, startDate, endDate);
                     filesToIngest.add(new MediaFileIngestOutputParameters(filenameSB, filenameYouSee, sbChannelID, youseeChannelID, startDate, endDate));
-                    hour++;
+                    startDate = startDate.plusHours(1);
                 }
             }
         } catch (ServiceException e) {
