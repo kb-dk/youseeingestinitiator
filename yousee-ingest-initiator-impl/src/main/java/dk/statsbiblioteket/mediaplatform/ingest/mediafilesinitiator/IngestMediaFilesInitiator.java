@@ -45,7 +45,8 @@ public class IngestMediaFilesInitiator {
     private static final String WORK_FLOW_STATE_NAME_STOPPED_KEY = "work.flow.state.name.stoppped";
     private static final String WORK_FLOW_STATE_NAME_RESTARTED_KEY = "work.flow.state.name.restarted";
     private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
-    private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
+    private static final DateTimeFormatter outputDataDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
     private static final DateTimeFormatter sbFilenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
 
     private final ChannelArchiveRequestServiceIF channelArchiveRequestService;
@@ -395,8 +396,8 @@ protected void outputResult(List<MediaFileIngestOutputParameters> outputList, Ou
                 + "         {\n"
                 + "            \"fileID\" : \"" +          mediaFileIngestParameters.getFileNameSB() + "\",\n"
                 + "            \"youSeeFilename\" : \"" +  mediaFileIngestParameters.getFileNameYouSee() + "\",\n"
-                + "            \"startTime\" : \"" +       youseeFilenameDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
-                + "            \"endTime\" : \"" +         youseeFilenameDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
+                + "            \"startTime\" : \"" +       outputDataDateFormatter.print(mediaFileIngestParameters.getStartDate()) + "\",\n"
+                + "            \"endTime\" : \"" +         outputDataDateFormatter.print(mediaFileIngestParameters.getEndDate()) + "\",\n"
                 + "            \"youseeChannelID\" : \"" + mediaFileIngestParameters.getChannelIDYouSee() + "\",\n"
                 + "            \"sbChannelID\" : \"" +     mediaFileIngestParameters.getChannelIDSB() + "\"\n"
                 + "         }";
