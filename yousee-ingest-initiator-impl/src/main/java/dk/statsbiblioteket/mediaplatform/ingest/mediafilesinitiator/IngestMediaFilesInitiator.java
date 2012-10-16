@@ -18,7 +18,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
+import org.joda.time.format.ISODateTimeFormat;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.ChannelArchiveRequestServiceIF;
@@ -46,7 +46,7 @@ public class IngestMediaFilesInitiator {
     private static final String WORK_FLOW_STATE_NAME_RESTARTED_KEY = "work.flow.state.name.restarted";
     private static final Logger log = Logger.getLogger(IngestMediaFilesInitiator.class);;
     private static final DateTimeFormatter youseeFilenameDateFormatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
-    private static final DateTimeFormatter outputDataDateFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter outputDataDateFormatter = ISODateTimeFormat.basicDateTimeNoMillis();
     private static final DateTimeFormatter sbFilenameDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
 
     private final ChannelArchiveRequestServiceIF channelArchiveRequestService;
