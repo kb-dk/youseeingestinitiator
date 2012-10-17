@@ -195,7 +195,7 @@ public class IngestMediaFilesInitiator {
                 }
             }
         } catch (ServiceException e) {
-            throw new RuntimeException("An unexpected error occured.", e);
+            throw new RuntimeException("An unexpected error occurred: " + e.toString(), e);
         }
         return filesToIngest;
     }
