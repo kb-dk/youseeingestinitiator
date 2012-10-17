@@ -109,7 +109,8 @@ public class IngestMediaFilesInitiatorTest {
         Set<MediaFileIngestOutputParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
         MediaFileIngestOutputParameters mediaFileIngestParameters = new ArrayList<MediaFileIngestOutputParameters>(files).get(0);
         String actual = mediaFileIngestParameters.getFileNameYouSee();
-        assertEquals("DR1_20100301_000000_20100301_010000.mux", actual);
+        // Note: File dates are in UTC.
+        assertEquals("DR1_20100228_230000_20100301_000000.mux", actual);
     }
 
     @Test
