@@ -242,7 +242,7 @@ public class IngestMediaFilesInitiator {
                 + sbFilenameDateFormatter.print(startDate) + "_"
                 + endDateInSecondsSince1970 + "-"
                 + sbFilenameDateFormatter.print(endDate)
-                + "_ftp.ts";
+                + "_yousee.ts";
         return filenameSB;
     }
 

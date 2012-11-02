@@ -256,7 +256,7 @@ public class IngestMediaFilesInitiatorTest {
      * Test that the new sb filenames of yousee downloaded files are similiar to old format
      * 
      * Old: mux1.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
-     * New: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_ftp.ts
+     * New: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_yousee.ts
      * 
      */
     @Test
@@ -269,7 +269,7 @@ public class IngestMediaFilesInitiatorTest {
                 System.out);
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
         String actualFilename = initiator.getSBFileID("dr1", fmt.parseDateTime("2012-01-09-14.00.00"), fmt.parseDateTime("2012-01-09-15.00.00"));
-        String expectedFilename = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_ftp.ts";
+        String expectedFilename = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_yousee.ts";
         assertEquals(expectedFilename, actualFilename);
     }
     

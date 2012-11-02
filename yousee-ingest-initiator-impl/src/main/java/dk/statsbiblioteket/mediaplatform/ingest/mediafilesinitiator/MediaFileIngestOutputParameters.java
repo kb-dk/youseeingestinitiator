@@ -30,7 +30,7 @@ public class MediaFileIngestOutputParameters implements Comparable<MediaFileInge
     /** The end time (whole hour) of the media, ie. 2012-03-04 15:00:00 */
     public final DateTime endDate; // YYYYMMDDHHMMSS
     
-    /** The filename of the media as found on the YouSee ftp-server */
+    /** The filename of the media as found on the YouSee server */
     public final String fileNameYouSee;
 
     /** The filename of the media in the archive */
