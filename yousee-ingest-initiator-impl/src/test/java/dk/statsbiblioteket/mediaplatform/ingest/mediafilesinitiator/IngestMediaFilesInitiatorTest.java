@@ -293,7 +293,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_failedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-20-03.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(13).toDate();
         String component = "yousee Downloader";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Starting";
@@ -313,7 +313,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_completedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-20-03.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(13).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Done";
@@ -333,7 +333,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_recentlyStartedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(1).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Completed";
@@ -353,7 +353,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_stopped() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(1).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Stopped";
@@ -373,7 +373,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_restarted() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(1).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Restarted";
@@ -393,7 +393,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_recentlyFailed() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-27-23.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(1).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Failed";
@@ -413,7 +413,7 @@ public class IngestMediaFilesInitiatorTest {
     @Test
     public void testShouldInititateIngest_notRecentlyFailed() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
-        Date stateUpdatedDate = dateTimeFormatter.parseDateTime("2012-01-26-23.00.00").toDate();
+        Date stateUpdatedDate = new DateTime().minusHours(13).toDate();
         String component = "Yousee complete workflow final step";
         String sbFilenameId = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts";
         String stateName = "Failed";

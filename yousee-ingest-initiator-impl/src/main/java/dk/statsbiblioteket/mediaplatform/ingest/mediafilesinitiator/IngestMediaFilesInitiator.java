@@ -373,7 +373,7 @@ public class IngestMediaFilesInitiator {
             initiateIngest = true;
         } else if (state.getStateName().equals(workFlowStateNameStopped)) {
             initiateIngest = false;
-        } else if (state.getDate().after(dateOfIngest.minusHours(expectedDurationOfFileIngestProcess).toDate())) {
+        } else if (state.getDate().after(new DateTime().minusHours(expectedDurationOfFileIngestProcess).toDate())) {
             initiateIngest = false;
         } else { // Any other (non-final) state older than expectedDurationOfFileIngestProcess hours
             initiateIngest = true;
