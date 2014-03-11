@@ -1,12 +1,12 @@
 package dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,13 +23,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.IngestMediaFilesInitiator;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.ChannelArchiveRequestServiceTestStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.WorkFlowStateMonitorFacadeStub;
 import dk.statsbiblioteket.mediaplatform.ingest.mediafilesinitiator.mock.YouSeeChannelMappingServiceTestStub;
 import dk.statsbiblioteket.mediaplatform.ingest.model.ChannelArchiveRequest;
 import dk.statsbiblioteket.mediaplatform.ingest.model.WeekdayCoverage;
-import dk.statsbiblioteket.medieplatform.workflowstatemonitor.State;
 
 public class IngestMediaFilesInitiatorTest {
 
@@ -37,13 +35,14 @@ public class IngestMediaFilesInitiatorTest {
     private Properties defaultProperties;
 
     public IngestMediaFilesInitiatorTest() throws IOException {
-        File propertyFile = new File("src/test/config/ingest_initiator_media_files_unittest.properties");
+        File propertyFile = new File(getClass().getClassLoader().getResource(
+                "ingest_initiator_media_files_unittest.properties").getPath());
         FileInputStream in = new FileInputStream(propertyFile);
         defaultProperties = new Properties();
         defaultProperties.load(in);
         in.close();
         System.getProperties().put("log4j.defaultInitOverride", "true");
-        DOMConfigurator.configure(defaultProperties.getProperty("log4j.config.file.path"));
+        DOMConfigurator.configure(getClass().getClassLoader().getResource(defaultProperties.getProperty("log4j.config.file.path")));
         log = Logger.getLogger(IngestMediaFilesInitiatorTest.class);
     }
 
@@ -111,6 +110,21 @@ public class IngestMediaFilesInitiatorTest {
         String actual = mediaFileIngestParameters.getFileNameYouSee();
         // Note: File dates are in UTC.
         assertEquals("DR1_20100228_230000_20100301_000000.mux", actual);
+    }
+
+    @Test
+    public void inferFilesToIngestSummerTimeTest() throws IOException {
+        DateTime dateToCheck = new DateTime(2013, 3, 31, 0, 0, 0, 0); // 2013-03-31 ~ sunday, 2013-04-01 ~ monday
+        ChannelArchiveRequest caRequest = ChannelArchiveRequestServiceTestStub.createRequest(1L, "dr1", WeekdayCoverage.SUNDAY, new Time(0, 0, 0), new Time(2, 0, 0), dateToCheck.minusDays(3).toDate(), dateToCheck.plusDays(3).toDate());
+        IngestMediaFilesInitiator initiator = new IngestMediaFilesInitiator(
+                defaultProperties,
+                null,
+                new YouSeeChannelMappingServiceTestStub(),
+                null,
+                System.out);
+        Set<MediaFileIngestOutputParameters> files = initiator.inferFilesToIngest(caRequest, dateToCheck);
+        int expectedNumberOfFiles = 2;
+        assertEquals(expectedNumberOfFiles, files.size());
     }
 
     @Test
@@ -272,7 +286,7 @@ public class IngestMediaFilesInitiatorTest {
         String expectedFilename = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_yousee.ts";
         assertEquals(expectedFilename, actualFilename);
     }
-    
+
     @Test
     public void testShouldInititateIngest_notIngested() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -288,8 +302,8 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(true, result);
     }    
-    
-    
+
+
     @Test
     public void testShouldInititateIngest_failedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -309,7 +323,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(true, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_completedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -329,7 +343,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(false, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_recentlyStartedIngest() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -349,7 +363,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(false, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_stopped() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -369,7 +383,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(false, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_restarted() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -389,7 +403,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(true, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_recentlyFailed() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
@@ -409,7 +423,7 @@ public class IngestMediaFilesInitiatorTest {
         boolean result = initiator.shouldInititateIngest(dateOfIngest, fileNameSB);
         assertEquals(false, result);
     }    
-    
+
     @Test
     public void testShouldInititateIngest_notRecentlyFailed() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");

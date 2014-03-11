@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
 
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.ChannelArchivingRequesterValidator;
 import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.ValidationFailure;
@@ -15,6 +16,8 @@ import dk.statsbiblioteket.mediaplatform.ingest.model.service.validator.Validato
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -176,12 +179,26 @@ public class IngestMediaFilesInitiator {
         try {
             if (isChannelArchiveRequestActive(caRequest, dayToCheck)) {
                 String sbChannelID = caRequest.getsBChannelId();
+                DateTimeZone dateTimeZone = DateTimeZone.forTimeZone(TimeZone.getDefault());
                 LocalTime localTimeFrom = new LocalTime(caRequest.getFromTime().getTime());
                 LocalTime localTimeTo = new LocalTime(caRequest.getToTime().getTime());
-                DateTime startDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(),
-                                                  localTimeFrom.getHourOfDay(), 0);
-                DateTime finalDate = new DateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(), dayToCheck.getDayOfMonth(),
-                                                                  localTimeTo.getHourOfDay(), localTimeTo.getMinuteOfHour());
+                LocalDateTime startDateLocal = new LocalDateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(),
+                                                                 dayToCheck.getDayOfMonth(),
+                                                                 localTimeFrom.getHourOfDay(), 0);
+                if (dateTimeZone.isLocalDateTimeGap(startDateLocal)) {
+                    startDateLocal = new LocalDateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(),
+                                                       dayToCheck.getDayOfMonth(), localTimeFrom.getHourOfDay() + 1, 0);
+                }
+                LocalDateTime finalDateLocal = new LocalDateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(),
+                                                                 dayToCheck.getDayOfMonth(), localTimeTo.getHourOfDay(),
+                                                                 localTimeTo.getMinuteOfHour());
+                if (dateTimeZone.isLocalDateTimeGap(finalDateLocal)) {
+                    finalDateLocal = new LocalDateTime(dayToCheck.getYear(), dayToCheck.getMonthOfYear(),
+                                                       dayToCheck.getDayOfMonth(), localTimeTo.getHourOfDay() + 1,
+                                                       localTimeTo.getMinuteOfHour());
+                }
+                DateTime startDate = startDateLocal.toDateTime();
+                DateTime finalDate = finalDateLocal.toDateTime();
                 if (!startDate.isBefore(finalDate)) {
                     finalDate = finalDate.plusDays(1);
                 }
