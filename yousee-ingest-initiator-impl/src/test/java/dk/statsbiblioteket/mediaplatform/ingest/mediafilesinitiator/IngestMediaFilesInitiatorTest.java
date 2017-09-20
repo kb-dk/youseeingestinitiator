@@ -283,7 +283,7 @@ public class IngestMediaFilesInitiatorTest {
                 System.out);
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss");
         String actualFilename = initiator.getSBFileID("dr1", fmt.parseDateTime("2012-01-09-14.00.00"), fmt.parseDateTime("2012-01-09-15.00.00"));
-        String expectedFilename = "dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_yousee.ts";
+        String expectedFilename = "dr1_teracom.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_teracom.ts";
         assertEquals(expectedFilename, actualFilename);
     }
 

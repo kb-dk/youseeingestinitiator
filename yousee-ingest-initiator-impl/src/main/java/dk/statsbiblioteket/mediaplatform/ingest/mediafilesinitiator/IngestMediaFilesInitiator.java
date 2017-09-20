@@ -243,7 +243,8 @@ public class IngestMediaFilesInitiator {
      * Format <channel_id>.<seconds_since_1970-01-01>-<
      * 
      * Old digital filename: mux1.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
-     * New YouSee filename: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_dvb1-1.ts
+     * Old YouSee filename: dr1_yousee.1326114000-2012-01-09-14.00.00_1326117600-2012-01-09-15.00.00_yousee.ts
+     * New Teracom filename: dr1_teracom.1326114000-2017-10-01-14.00.00_1326117600-2017-10-01-15.00.00_teracom.ts
      * 
      * @param sbChannelID 
      * @param startDate
@@ -254,12 +255,12 @@ public class IngestMediaFilesInitiator {
         Long startDateInSecondsSince1970 = startDate.getMillis() / 1000;
         Long endDateInSecondsSince1970 = endDate.getMillis() / 1000;
         String filenameSB = sbChannelID
-                + "_yousee."
+                + "_teracom."
                 + startDateInSecondsSince1970 + "-"
                 + sbFilenameDateFormatter.print(startDate) + "_"
                 + endDateInSecondsSince1970 + "-"
                 + sbFilenameDateFormatter.print(endDate)
-                + "_yousee.ts";
+                + "_teracom.ts";
         return filenameSB;
     }
 
