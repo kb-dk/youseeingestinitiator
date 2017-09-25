@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dk.statsbiblioteket.medieplatform</groupId>
   <artifactId>yousee-ingest-initiator-parent</artifactId>
-  <version>1.1.9-SNAPSHOT</version>
+  <version>1.1.9</version>
   <packaging>pom</packaging>
   <name>Yousee Ingest Initiator</name>
   <description>Initiates ingest of medie files</description>
@@ -15,6 +15,7 @@
     <url>https://github.com/statsbiblioteket/youseeingestinitiator</url>
     <connection>scm:git:git@github.com:statsbiblioteket/youseeingestinitiator.git</connection>
     <developerConnection>scm:git:git@github.com:statsbiblioteket/youseeingestinitiator.git</developerConnection>
+    <tag>yousee-ingest-initiator-parent-1.1.9</tag>
   </scm>
 
   <parent>
