@@ -35,4 +35,9 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <properties>
+      <additionalparam>-Xdoclint:none</additionalparam>
+  </properties>
+
 </project>
