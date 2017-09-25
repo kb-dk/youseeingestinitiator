@@ -5,3 +5,7 @@ target
 *.ipr
 *.iml
 atlassian-ide-plugin.xml
+.project
+*/.settings/*
+.settings/*
+*/.classpath
